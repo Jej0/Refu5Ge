@@ -1,26 +1,15 @@
-from datetime import date
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileUpdateForm
 
-from django.shortcuts import render
-
-# Create your views here.
-from django.views.generic import ListView
-from .models import ToDoItem
-
-
-class AllToDos(ListView):
-    model = ToDoItem
-    template_name = "todo/index.html"
-
-    def get_queryset(self):
-        return ToDoItem.objects.filter(due_date__gte=date.today())
-
-
-class TodayToDos(ListView):
-    model = ToDoItem
-    template_name = "todo/today.html"
-
-    def get_queryset(self):
-        return ToDoItem.objects.filter(due_date=date.today())
-
-
-
+@login_required
+def modifier_profil(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+         form.save()
+         return redirect('modifier_profil') # Remplace 'profil' par 'modifier_profil'
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+    
+    return render(request, 'todo/modifier_profil.html', {'form': form})
