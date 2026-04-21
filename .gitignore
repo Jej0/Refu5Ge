@@ -4,8 +4,6 @@
 *.pyo
 *.pyd
 __pycache__/
-*.so
-*.egg
-*.egg-info/
-dist/
-.gitignore
+db.sqlite3-wal
+db.sqlite3-shm
+db.sqlite3
