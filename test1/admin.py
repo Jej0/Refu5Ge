@@ -8,3 +8,6 @@ from .models import *
 admin.site.register(ToDoItem)
 admin.site.register(Test)
 admin.site.register(Test2)
+admin.site.register(Room)
+admin.site.register(Device)
+admin.site.register(DeviceAttribute)

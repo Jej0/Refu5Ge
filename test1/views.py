@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.apps import apps
 
 # Create your views here.
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DetailView
 from .models import *
 from .forms import *
 
@@ -12,7 +12,6 @@ from .forms import *
 class AllToDos(ListView):
     model = ToDoItem
     template_name = "test1/index.html"
-
 
     def get_queryset(self):
         return ToDoItem.objects.filter(due_date__gte=date.today())
@@ -24,6 +23,7 @@ class TodayToDos(ListView):
 
     def get_queryset(self):
         return ToDoItem.objects.filter(due_date=date.today())
+
 
 class Test1(ListView):
     model = Test
@@ -38,6 +38,22 @@ class Test1(ListView):
         return context
 
 
+class AllRooms(ListView):
+    model = Room
+    template_name = "test1/allRooms.html"
+
+    def get_queryset(self):
+        return Room.objects.all()
+
+class RoomDetail(DetailView):
+    model = Room
+    template_name = "test1/room_detail.html"
+    context_object_name = "room"
+
+class ItemDetail(DetailView):
+    model = Device
+    template_name = "test1/item_detail.html"
+    context_object_name = "item"
 
 
 def add_test(request):
@@ -73,4 +89,3 @@ def edit_object(request, model_name, object_id):
         "object": obj,
         "model_name": model_name,
     })
-
