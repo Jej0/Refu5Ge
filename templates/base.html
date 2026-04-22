@@ -1,23 +1,190 @@
-<!doctype html>
-<html lang="en">
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refuge Animalier Intelligent</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Styles personnalisés -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Font Awesome pour icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            max-height: 400px;
+        }
+    </style>
 </head>
-<body>
-<div>
-    <a class="button" href='{% url "todo:index" %}'>All tasks</a>
-    <a class="button" href='{% url "todo:today" %}'>Today</a>
-</div>
+<body class="bg-gray-50 font-sans flex flex-col min-h-screen">
+    <!-- ==================== NAVBAR ==================== -->
+    <header class="bg-green-700 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo et nom -->
+                <a href="{% url 'accueil' %}" class="flex items-center space-x-2 text-2xl font-bold hover:text-green-200 transition">
+                    <i class="fas fa-paw"></i>
+                    <span>Refuge Intelligent</span>
+                </a>
 
+                <!-- Menu desktop (caché sur mobile) -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="{% url 'accueil' %}" class="hover:text-green-200 transition">Accueil</a>
+                    <a href="{% url 'recherche' %}" class="hover:text-green-200 transition">Recherche</a>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard_simple' %}" class="hover:text-green-200 transition">Dashboard</a>
+                        <a href="{% url 'profil' %}" class="hover:text-green-200 transition">Profil</a>
+                        <a href="{% url 'profils_liste' %}" class="hover:text-green-200 transition">Membres</a>
+                        {% if user.type_utilisateur == 'complexe' or user.type_utilisateur == 'administrateur' %}
+                            <a href="{% url 'dashboard_complexe' %}" class="hover:text-green-200 transition">Gestion</a>
+                        {% endif %}
+                        <!-- Menu dropdown utilisateur -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-1 hover:text-green-200 transition">
+                                <i class="fas fa-user-circle text-xl"></i>
+                                <span>{{ user.pseudo|truncatechars:12 }}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="{% url 'profil' %}" class="block px-4 py-2 hover:bg-green-50 rounded-t-md">
+                                    <i class="fas fa-user-edit mr-2"></i>Mon profil
+                                </a>
+                                <a href="{% url 'deconnexion' %}" class="block px-4 py-2 hover:bg-green-50 rounded-b-md text-red-600">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'connexion' %}" class="hover:text-green-200 transition">Connexion</a>
+                        <a href="{% url 'inscription' %}" class="bg-white text-green-700 px-4 py-2 rounded-full font-semibold hover:bg-green-100 transition shadow-sm">
+                            Inscription
+                        </a>
+                    {% endif %}
+                </nav>
 
-{% block content %}{% endblock %}
+                <!-- Bouton hamburger (mobile) -->
+                <button id="menu-btn" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Menu mobile -->
+            <div id="mobile-menu" class="mobile-menu md:hidden mt-3 border-t border-green-600 pt-3">
+                <a href="{% url 'accueil' %}" class="block py-2 hover:text-green-200 transition">Accueil</a>
+                <a href="{% url 'recherche' %}" class="block py-2 hover:text-green-200 transition">Recherche</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard_simple' %}" class="block py-2 hover:text-green-200 transition">Dashboard</a>
+                    <a href="{% url 'profil' %}" class="block py-2 hover:text-green-200 transition">Profil</a>
+                    <a href="{% url 'profils_liste' %}" class="block py-2 hover:text-green-200 transition">Membres</a>
+                    {% if user.type_utilisateur == 'complexe' or user.type_utilisateur == 'administrateur' %}
+                        <a href="{% url 'dashboard_complexe' %}" class="block py-2 hover:text-green-200 transition">Gestion</a>
+                    {% endif %}
+                    <a href="{% url 'deconnexion' %}" class="block py-2 text-red-300 hover:text-red-100 transition">Déconnexion</a>
+                {% else %}
+                    <a href="{% url 'connexion' %}" class="block py-2 hover:text-green-200 transition">Connexion</a>
+                    <a href="{% url 'inscription' %}" class="block py-2 font-semibold">Inscription</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== CONTENU PRINCIPAL ==================== -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="p-4 mb-4 rounded-lg shadow-sm {% if message.tags == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-500{% elif message.tags == 'error' %}bg-red-100 text-red-800 border-l-4 border-red-500{% else %}bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500{% endif %}">
+                    <div class="flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-paw mr-2"></i>Refuge Intelligent
+                    </h3>
+                    <p class="text-gray-400 text-sm">
+                        Une plateforme connectée pour le bien-être animal. Gestion intelligente des objets IoT au service des refuges.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Liens rapides</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{% url 'accueil' %}" class="hover:text-white transition">Accueil</a></li>
+                        <li><a href="{% url 'recherche' %}" class="hover:text-white transition">Recherche</a></li>
+                        <li><a href="{% url 'inscription' %}" class="hover:text-white transition">Inscription</a></li>
+                        <li><a href="{% url 'connexion' %}" class="hover:text-white transition">Connexion</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Ressources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">À propos du refuge</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition">Mentions légales</a></li>
+                        <li><a href="#" class="hover:text-white transition">Politique de confidentialité</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Suivez-nous</h4>
+                    <div class="flex space-x-4 text-2xl">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                    <p class="mt-4 text-gray-400 text-sm">
+                        <i class="far fa-envelope mr-1"></i> contact@refuge-intelligent.fr
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
+                <p>&copy; 2026 Refuge Animalier Intelligent. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let lazyImages = [].slice.call(document.querySelectorAll("img.lazy-img"));
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.add("loaded");
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
-
