@@ -9,6 +9,8 @@ from .models import EmailVerifToken
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
 def register(request):
     if request.method == 'POST':
@@ -61,9 +63,6 @@ def verif_email(request,token):
     return redirect('accounts:login')
 
 
-@login_required
-def profil(request):
-    return render(request, 'login/profile.html', {'user': request.user})
 
 @login_required
 def edit_profile(request):
@@ -76,3 +75,22 @@ def edit_profile(request):
     else:
         form = UserUpdateForm(instance=request.user)
     return render(request, 'login/edit_profile.html', {'form': form})
+
+
+@login_required
+def user_list(request):
+    users_list = User.objects.all().order_by('username')
+    paginator = Paginator(users_list, 20)  # 20 utilisateurs par page
+    page_number = request.GET.get('page')
+    users = paginator.get_page(page_number)
+    return render(request, 'login/user_list.html', {'users': users})
+
+
+
+@login_required
+def public_profile(request, user_id):
+    profile_user = get_object_or_404(User, pk=user_id)
+    context = {
+        'profile_user': profile_user,
+    }
+    return render(request, 'login/profile_user.html', context)

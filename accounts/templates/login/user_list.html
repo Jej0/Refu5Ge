@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des utilisateurs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        tr:hover { background-color: #f9f9f9; }
+        .pagination { margin-top: 20px; }
+        .pagination a { margin-right: 10px; }
+        .profile-link { text-decoration: none; color: #337ab7; }
+        .profile-link:hover { text-decoration: underline; }
+        .badge { background: #5cb85c; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Liste des utilisateurs</h1>
+    <p><a href="{% url 'core:home' %}">← Retour à l'accueil</a></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Email</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Inscrit le</th>
+                <th>Dernière connexion</th>
+                <th>Actif</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <a href="{% url 'accounts:profile' user.id %}" class="profile-link">
+                        {{ user.username }}
+                    </a>
+                    {% if user.is_superuser %}
+                        <span class="badge">Admin</span>
+                    {% elif user.is_staff %}
+                        <span class="badge">Staff</span>
+                    {% endif %}
+                </td>
+                <td>{{ user.email|default:"-" }}</td>
+                <td>{{ user.first_name|default:"-" }}</td>
+                <td>{{ user.last_name|default:"-" }}</td>
+                <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                <td>{{ user.last_login|date:"d/m/Y H:i"|default:"Jamais" }}</td>
+                <td>{{ user.is_active|yesno:"Oui,Non" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Aucun utilisateur trouvé.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    {% if users.has_other_pages %}
+    <div class="pagination">
+        <span>
+            {% if users.has_previous %}
+                <a href="?page=1">&laquo; Première</a>
+                <a href="?page={{ users.previous_page_number }}">Précédente</a>
+            {% endif %}
+
+            <span>Page {{ users.number }} / {{ users.paginator.num_pages }}</span>
+
+            {% if users.has_next %}
+                <a href="?page={{ users.next_page_number }}">Suivante</a>
+                <a href="?page={{ users.paginator.num_pages }}">Dernière &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+</body>
+</html>

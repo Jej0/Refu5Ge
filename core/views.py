@@ -12,44 +12,40 @@ def home(request):
     return render(request, 'core/home.html')
 
 
-class AllRooms(ListView):
-    model = Room
-    template_name = "core/allRooms.html"
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Room, Device, DeviceAttribute
 
-    def get_queryset(self):
-        return Room.objects.all()
+def search_rooms(request):
+    query = request.GET.get('q', '')
+    rooms = Room.objects.all()
+    if query:
+        rooms = rooms.filter(name__icontains=query)
+    return render(request, 'core/search_rooms.html', {
+        'rooms': rooms,
+        'query': query
+    })
 
-class RoomDetail(DetailView):
-    model = Room
-    template_name = "core/room_detail.html"
-    context_object_name = "room"
+def search_devices(request):
+    query = request.GET.get('q', '')
+    devices = Device.objects.select_related('room').all()
+    if query:
+        devices = devices.filter(
+            Q(name__icontains=query) | Q(type__icontains=query) | Q(room__name__icontains=query)
+        )
+    return render(request, 'core/search_devices.html', {
+        'devices': devices,
+        'query': query
+    })
 
-class ItemDetail(DetailView):
-    model = Device
-    template_name = "core/item_detail.html"
-    context_object_name = "item"
-
-
-def edit_object(request, model_name, object_id):
-    """Vue générique pour éditer n'importe quel modèle"""
-    try:
-        model = apps.get_model('core', model_name)
-    except LookupError:
-        return render(request, "core/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
-
-    obj = get_object_or_404(model, pk=object_id)
-    form_class = get_generic_form(model)
-
-    if request.method == "POST":
-        form = form_class(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            return redirect("home")  # Redirection après édition
-    else:
-        form = form_class(instance=obj)
-
-    return render(request, "core/edit.html", {
-        "form": form,
-        "object": obj,
-        "model_name": model_name,
+def search_attributes(request):
+    query = request.GET.get('q', '')
+    attributes = DeviceAttribute.objects.select_related('device', 'device__room').all()
+    if query:
+        attributes = attributes.filter(
+            Q(key__icontains=query) | Q(value__icontains=query) | Q(device__name__icontains=query)
+        )
+    return render(request, 'core/search_attributes.html', {
+        'attributes': attributes,
+        'query': query
     })
