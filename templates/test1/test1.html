@@ -15,7 +15,7 @@
                     <td>{{ item.title }}</td>
                     <td>{{ item.value }}</td>
                     <td>
-                        <a href="{% url 'edit_object' 'Test' item.id %}" class="button">Éditer</a>
+                        <a href="{% url 'edit_object' 'Test' item.id %}?next={{ request.get_full_path|urlencode }}" class="button">Éditer</a>
                     </td>
                 </tr>
             {% empty %}

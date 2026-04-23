@@ -2,6 +2,7 @@ from datetime import date
 
 from django.shortcuts import redirect, render, get_object_or_404
 from django.apps import apps
+from django.utils.http import url_has_allowed_host_and_scheme
 
 # Create your views here.
 from django.views.generic import ListView, UpdateView, DetailView
@@ -45,10 +46,12 @@ class AllRooms(ListView):
     def get_queryset(self):
         return Room.objects.all()
 
+
 class RoomDetail(DetailView):
     model = Room
     template_name = "test1/room_detail.html"
     context_object_name = "room"
+
 
 class ItemDetail(DetailView):
     model = Device
@@ -75,12 +78,20 @@ def edit_object(request, model_name, object_id):
 
     obj = get_object_or_404(model, pk=object_id)
     form_class = get_generic_form(model)
+    next_url = request.GET.get("next", "")
 
     if request.method == "POST":
         form = form_class(request.POST, instance=obj)
+        next_url = request.POST.get("next", "")
         if form.is_valid():
             form.save()
-            return redirect("test1")  # Redirection après édition
+            if next_url and url_has_allowed_host_and_scheme(
+                next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            ):
+                return redirect(next_url)
+            return redirect("test1")
     else:
         form = form_class(instance=obj)
 
@@ -88,4 +99,5 @@ def edit_object(request, model_name, object_id):
         "form": form,
         "object": obj,
         "model_name": model_name,
+        "next": next_url,
     })

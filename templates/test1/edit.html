@@ -4,9 +4,14 @@
 
     <form method="POST">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
         {{ form.as_p }}
         <button type="submit">Sauvegarder</button>
-        <a href="{% url 'test1' %}" class="button">Annuler</a>
+        {% if next %}
+            <a href="{{ next }}" class="button">Annuler</a>
+        {% else %}
+            <a href="{% url 'test1' %}" class="button">Annuler</a>
+        {% endif %}
     </form>
 {% endblock %}
 

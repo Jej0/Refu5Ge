@@ -7,6 +7,6 @@
   {% for i in item.attributes.all %}
     <p>{{ i.key }} : ({{ i.value }})</p>
   {% endfor %}
-
+    <a href="{% url 'edit_object' 'Device' item.id %}?next={{ request.get_full_path|urlencode }}">Modification</a>
   <a href="{% url 'test1_all_rooms' %}" class="button">Retour</a>
 {% endblock %}
