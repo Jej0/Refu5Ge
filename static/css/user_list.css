@@ -1,0 +1,160 @@
+
+body.userlist-page {
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+        url('https://www.mnhn.fr/system/files/styles/16_10_highest/private/thumbnails/image/panda_roux_3.jpg.webp?itok=UorAGLHJ')
+        center / cover fixed;
+    color: #2c3e50;
+}
+
+.userlist-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem 1.5rem;
+}
+
+.userlist-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.back-link {
+    margin-bottom: 1.5rem;
+}
+.back-link a {
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    transition: color 0.2s;
+}
+.back-link a:hover {
+    color: #d4a373;
+    text-decoration: underline;
+}
+
+.table-wrapper {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    border: 1px solid #d4a373;
+    margin-bottom: 2rem;
+}
+
+.table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-wrapper thead {
+    background-color: rgba(45, 106, 79, 0.08);
+}
+
+.table-wrapper th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 700;
+    color: #2d6a4f;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #d4a373;
+}
+
+.table-wrapper td {
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+    color: #333;
+    border-bottom: 1px solid #f0e5d8;
+}
+
+.table-wrapper tr:last-child td {
+    border-bottom: none;
+}
+
+.table-wrapper tr:hover td {
+    background-color: rgba(45, 106, 79, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.table-wrapper td a {
+    color: #2d6a4f;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.table-wrapper td a:hover {
+    color: #1b4332;
+    text-decoration: underline;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+.badge-admin {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.badge-staff {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.pagination a,
+.pagination span.current {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.pagination a {
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid #d4a373;
+    color: #2d6a4f;
+    backdrop-filter: blur(4px);
+}
+
+.pagination a:hover {
+    background-color: #2d6a4f;
+    color: white;
+    border-color: #2d6a4f;
+}
+
+.pagination span.current {
+    background-color: #2d6a4f;
+    color: white;
+    border: 1px solid #2d6a4f;
+}
+
+/* État vide */
+.empty-row td {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+    font-style: italic;
+}
