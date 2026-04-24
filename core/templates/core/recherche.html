@@ -1,0 +1,106 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block body_class %}recherche-page{% endblock %}
+{% block main_class %}bg-transparent{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/recherche.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <!-- VIDÉO  -->
+  <div class="video-background">
+    <video autoplay muted loop playsinline>
+      <source src="https://www.thoiry.net/wp-content/uploads/2025/06/VIDEO-SITE-INTERNET.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <h1 class="recherche-titre">Recherche dans le <span>refuge</span></h1>
+
+  <div class="recherche-container">
+
+    <div class="bulle">
+      <label>🐶 Rechercher un animal</label>
+      <form method="get">
+        <div class="filtres-grid">
+          <div><input type="text" name="nom" value="{{ request.GET.nom }}" placeholder="Nom (ex: Rex)"></div>
+          <div>
+            <select name="espece">
+              <option value="">Toutes les espèces</option>
+              {% for e in especes_disponibles %}<option value="{{ e }}" {% if request.GET.espece == e %}selected{% endif %}>{{ e }}</option>{% endfor %}
+            </select>
+          </div>
+          <div>
+            <select name="race">
+              <option value="">Toutes les races</option>
+              {% for r in races_disponibles %}<option value="{{ r }}" {% if request.GET.race == r %}selected{% endif %}>{{ r }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-recherche">🔍 Filtrer les animaux</button>
+      </form>
+    </div>
+
+    <div class="resultats-section">
+      <h2>🐾 Animaux trouvés ({{ animaux|length }})</h2>
+      {% if animaux %}
+        <div class="ensemble-cartes">
+          {% for animal in animaux %}
+            <div class="carte-info">
+              {% if animal.photo %}<img src="{{ animal.photo.url }}" alt="{{ animal.nom }}">
+              {% else %}<div style="height:200px; background:#f3e8d9; display:flex; align-items:center; justify-content:center; font-size:3rem; color:#d4a373;"><i class="fas fa-paw"></i></div>{% endif %}
+              <div class="carte-body">
+                <h3>{{ animal.nom }}</h3>
+                <p>{{ animal.espece }} - {{ animal.race }}</p>
+                <p>{{ animal.description|truncatechars:80 }}</p>
+                {% if animal.disponible_adoption %}<span class="badge">Disponible</span>{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="aucun-resultat"><i class="fas fa-search fa-2x mb-3"></i><p>Aucun animal trouvé.</p></div>
+      {% endif %}
+    </div>
+
+    <div class="bulle" style="margin-top: 3rem;">
+      <label>📡 Rechercher un objet connecté</label>
+      <form method="get">
+        <div class="filtres-grid">
+          <div><input type="text" name="objet_nom" value="{{ request.GET.objet_nom }}" placeholder="Nom (ex: Thermostat)"></div>
+          <div>
+            <select name="categorie">
+              <option value="">Toutes les catégories</option>
+              {% for cat in categories %}<option value="{{ cat.id }}" {% if request.GET.categorie == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.nom }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-recherche">🔍 Filtrer les objets</button>
+      </form>
+    </div>
+
+    <div class="resultats-section">
+      <h2>🔌 Objets trouvés ({{ objets|length }})</h2>
+      {% if objets %}
+        <div class="ensemble-cartes">
+          {% for objet in objets %}
+            <div class="carte-info">
+              <div class="carte-body">
+                <h3>{{ objet.nom }}</h3>
+                <p><i class="fas fa-tag mr-1"></i> {{ objet.categorie.nom }}</p>
+                <p><i class="fas fa-battery-three-quarters mr-1"></i> {{ objet.batterie }}%</p>
+                {% if objet.piece %}<p><i class="fas fa-map-pin mr-1"></i> {{ objet.piece }}</p>{% endif %}
+                <span class="badge">{{ objet.get_etat_display }}</span>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="aucun-resultat"><i class="fas fa-search fa-2x mb-3"></i><p>Aucun objet trouvé.</p></div>
+      {% endif %}
+    </div>
+
+  </div>
+{% endblock %}
