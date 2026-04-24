@@ -2,10 +2,13 @@ from datetime import date
 
 from django.shortcuts import redirect, render, get_object_or_404
 from django.apps import apps
+from django.utils.decorators import method_decorator
 from django.utils.http import url_has_allowed_host_and_scheme
 
 # Create your views here.
 from django.views.generic import ListView, UpdateView, DetailView
+
+from Refu5Ge.decorators import group_required
 from .models import *
 from .forms import *
 
@@ -39,6 +42,7 @@ class Test1(ListView):
         return context
 
 
+@method_decorator(group_required("avancé"), name='dispatch')
 class AllRooms(ListView):
     model = Room
     template_name = "test1/allRooms.html"
