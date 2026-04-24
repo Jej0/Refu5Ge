@@ -24,6 +24,7 @@
 
     <!-- Bouton modifier visible uniquement si c'est le propriétaire -->
     {% if user.is_authenticated and user == profile_user %}
+        <p>Points : {{ user.profile.points }} | Niveau : {{ user.profile.get_level_display }}</p>
         <a href="{% url 'accounts:edit_profile' %}">Modifier mon profil</a>
         <a href="{% url 'accounts:password_change' %}">Changer mon mot de passe</a>
     {% endif %}
