@@ -1,16 +1,40 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Modifier mon profil</title>
-</head>
-<body>
-    <h1>Modifier mon profil</h1>
-    <form method="post">
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block body_class %}form-page{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/form-profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-wrapper">
+  <div class="form-card">
+    <h1><i class="fas fa-user-edit"></i> Modifier mon profil</h1>
+    <form method="post" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enregistrer</button>
-        <a href="{% url 'accounts:profile' %}">Annuler</a>
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input
+                    type="{{ field.field.widget.input_type }}"
+                    name="{{ field.name }}"
+                    id="{{ field.id_for_label }}"
+                    value="{{ field.value|default:'' }}"
+                    {% if field.field.disabled %}disabled{% endif %}
+                >
+                {% if field.errors %}
+                    <p class="text-red-500 text-xs">{{ field.errors.0 }}</p>
+                {% endif %}
+                {% if field.help_text %}
+                    <p class="text-gray-400 text-xs">{{ field.help_text }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-form"><i class="fas fa-save"></i> Enregistrer</button>
+        <a href="{% url 'accounts:profile' user.id %}" class="form-link">Annuler</a>
     </form>
-</body>
-</html>
+  </div>
+</div>
+{% endblock %}
