@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Éditer {{ model_name }} - {{ object }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {{ form.as_p }}
+        {% if attr_formset %}
+            <h2>Attributs</h2>
+            {{ attr_formset.management_form }}
+            <div id="attrs-forms">
+                {% for f in attr_formset %}
+                    <div class="attr-form-row">{{ f.as_p }}</div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-attr-row">+ Attribut</button>
+            <template id="empty-attr-form-template">
+                <div class="attr-form-row">{{ attr_formset.empty_form.as_p }}</div>
+            </template>
+        {% endif %}
+        <button type="submit">Sauvegarder</button>
+        {% if next %}
+            <a href="{{ next }}" class="button">Annuler</a>
+        {% else %}
+            <a href="{% url 'test1' %}" class="button">Annuler</a>
+        {% endif %}
+    </form>
+    {% if attr_formset %}
+        <script>
+            (function () {
+                const container = document.getElementById("attrs-forms");
+                const addButton = document.getElementById("add-attr-row");
+                if (!container || !addButton) return;
+
+                const totalForms = document.getElementById("id_attrs-TOTAL_FORMS");
+                const template = document.getElementById("empty-attr-form-template");
+                if (!totalForms || !template) return;
+
+                addButton.addEventListener("click", function () {
+                    const index = parseInt(totalForms.value, 10);
+                    const html = template.innerHTML.replace(/__prefix__/g, index);
+                    container.insertAdjacentHTML("beforeend", html);
+                    totalForms.value = index + 1;
+                });
+            })();
+        </script>
+    {% endif %}
+{% endblock %}
+
