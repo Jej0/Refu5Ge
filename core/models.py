@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here. Models are to get information from database
-from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -64,7 +61,7 @@ class Animal(models.Model):
     race = models.CharField(max_length=100, blank=True)
     age_estime = models.IntegerField(null=True, blank=True)
     description = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='animaux/', blank=True)
+    photo = models.URLField(blank=True)
     disponible_adoption = models.BooleanField(default=True)
     def __str__(self):
         return self.nom

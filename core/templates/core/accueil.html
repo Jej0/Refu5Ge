@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block main_class %}p-0 m-0 bg-[#2d6a4f]{% endblock %}
+{% block main_class %}{% endblock %}
 {% block body_class %}accueil-body{% endblock %}
 
 {% block extra_css %}
@@ -37,7 +37,7 @@
         {% for animal in animaux|slice:":3" %}
           <div class="card-safari">
             {% if animal.photo %}
-              <img src="{{ animal.photo.url }}" alt="{{ animal.nom }}">
+              <img src="{{ animal.photo }}" alt="{{ animal.nom }}">
             {% else %}
               <div class="animal-placeholder"><i class="fas fa-paw"></i></div>
             {% endif %}

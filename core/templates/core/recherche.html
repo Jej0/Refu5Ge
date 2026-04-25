@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body_class %}recherche-page{% endblock %}
-{% block main_class %}bg-transparent{% endblock %}
+{% block main_class %}{% endblock %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/recherche.css' %}">
 {% endblock %}
@@ -48,7 +48,7 @@
         <div class="ensemble-cartes">
           {% for animal in animaux %}
             <div class="carte-info">
-              {% if animal.photo %}<img src="{{ animal.photo.url }}" alt="{{ animal.nom }}">
+              {% if animal.photo %}<img src="{{ animal.photo }}" alt="{{ animal.nom }}">
               {% else %}<div class="carte-placeholder"><i class="fas fa-paw"></i></div>{% endif %}
               <div class="carte-body">
                 <h3>{{ animal.nom }}</h3>

@@ -4,18 +4,18 @@
 {% block body_class %}userlist-page{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="stylesheet" href="{% static 'css/table.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="userlist-container">
+<div class="table-page-shell">
 
-  <h1 class="userlist-title">Liste des utilisateurs</h1>
+  <h1 class="table-page-title">Liste des utilisateurs</h1>
   <div class="back-link">
     <a href="{% url 'core:home' %}">← Retour à l'accueil</a>
   </div>
 
-  <div class="table-wrapper">
+  <div class="table-shell">
     <table>
       <thead>
         <tr>
