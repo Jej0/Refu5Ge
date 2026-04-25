@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Rapport d’utilisation</h1>
+
+<p>
+    Cette page présente un rapport sur l’utilisation des objets connectés et des services.
+</p>
+
+<hr>
+
+<h2>Résumé du rapport</h2>
+
+<ul>
+    <li>Consommation totale : {{ consommation_totale }} kWh</li>
+    <li>Durée totale d’utilisation : {{ duree_totale }} minutes</li>
+</ul>
+
+<hr>
+
+<h2>Détail des utilisations</h2>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Objet</th>
+        <th>Service</th>
+        <th>Date d’utilisation</th>
+        <th>Durée</th>
+        <th>Consommation</th>
+    </tr>
+
+    {% for utilisation in utilisations %}
+    <tr>
+        <td>{{ utilisation.objet.nom }}</td>
+        <td>{{ utilisation.service.nom }}</td>
+        <td>{{ utilisation.date_utilisation }}</td>
+        <td>{{ utilisation.duree_minutes }} min</td>
+        <td>{{ utilisation.consommation }} kWh</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">Aucune utilisation enregistrée.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

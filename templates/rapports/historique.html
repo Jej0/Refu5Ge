@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Historique des données</h1>
+
+<p>
+    Cette page permet de consulter les anciennes données envoyées par les objets connectés.
+</p>
+
+<hr>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Objet</th>
+        <th>Type de donnée</th>
+        <th>Valeur</th>
+        <th>Unité</th>
+        <th>Date de mesure</th>
+    </tr>
+
+    {% for historique in historiques %}
+    <tr>
+        <td>{{ historique.objet.nom }}</td>
+        <td>{{ historique.type_donnee }}</td>
+        <td>{{ historique.valeur }}</td>
+        <td>{{ historique.unite }}</td>
+        <td>{{ historique.date_mesure }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">Aucune donnée historique disponible.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
