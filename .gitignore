@@ -1,1 +1,9 @@
 .vscode/settings.json
+*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+db.sqlite3-wal
+db.sqlite3-shm
+db.sqlite3

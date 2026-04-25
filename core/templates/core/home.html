@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+</head>
+<body>
+    <h1>Bienvenue sur MonSite</h1>
+    <p>Ceci est la page d'accueil.</p>
+    
+    {% if user.is_authenticated %}
+        <p>Bonjour {{ user.username }} !</p>
+        <a href="{% url 'accounts:profile' %}">Mon profil</a> |
+        <a href="{% url 'accounts:logout' %}">Déconnexion</a>
+    {% else %}
+        <a href="{% url 'accounts:login' %}">Connexion</a> |
+        <a href="{% url 'accounts:register' %}">Inscription</a>
+    {% endif %}
+</body>
+</html>

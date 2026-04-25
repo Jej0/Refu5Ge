@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block body_class %}login-page{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-overlay">
+
+    <div class="profile-avatar">
+      {{ profile_user.username|slice:":1"|upper }}
+    </div>
+
+    <h2>{{ profile_user.username }}</h2>
+
+    <div class="profile-field">
+      <strong>Prénom</strong>
+      <span>{{ profile_user.first_name|default:"Non renseigné" }}</span>
+    </div>
+    <div class="profile-field">
+      <strong>Nom</strong>
+      <span>{{ profile_user.last_name|default:"Non renseigné" }}</span>
+    </div>
+    <div class="profile-field">
+      <strong>Email</strong>
+      <span>{{ profile_user.email|default:"Non renseigné" }}</span>
+    </div>
+    <div class="profile-field">
+      <strong>Inscrit le</strong>
+      <span>{{ profile_user.date_joined|date:"d/m/Y" }}</span>
+    </div>
+    <div class="profile-field">
+      <strong>Dernière connexion</strong>
+      <span>{{ profile_user.last_login|date:"d/m/Y H:i"|default:"Jamais" }}</span>
+    </div>
+
+    {% if user.is_authenticated and user == profile_user %}
+      <div class="profile-stats">
+        <span>Points : {{ user.profile.points }}</span><br>
+        <span>Niveau : {{ user.profile.get_level_display }}</span>
+      </div>
+
+      <div class="profile-actions">
+        <a href="{% url 'accounts:edit_profile' %}" class="btn-login" style="width:auto; display:inline-block;">
+          <i class="fas fa-edit mr-1"></i> Modifier
+        </a>
+        <a href="{% url 'accounts:password_change' %}" class="btn-login" style="width:auto; display:inline-block; background-color:#6b705c;">
+          <i class="fas fa-lock mr-1"></i> Mot de passe
+        </a>
+      </div>
+    {% endif %}
+
+    <p class="login-link">
+      <a href="{% url 'core:home' %}">← Retour à l'accueil</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block body_class %}userlist-page{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="userlist-container">
+
+  <h1 class="userlist-title">Liste des utilisateurs</h1>
+  <div class="back-link">
+    <a href="{% url 'core:home' %}">← Retour à l'accueil</a>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom d'utilisateur</th>
+          <th>Email</th>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Inscrit le</th>
+          <th>Dernière connexion</th>
+          <th>Actif</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>
+              <a href="{% url 'accounts:profile' user.id %}">{{ user.username }}</a>
+              {% if user.is_superuser %}
+                <span class="badge badge-admin">Admin</span>
+              {% elif user.is_staff %}
+                <span class="badge badge-staff">Staff</span>
+              {% endif %}
+            </td>
+            <td>{{ user.email|default:"-" }}</td>
+            <td>{{ user.first_name|default:"-" }}</td>
+            <td>{{ user.last_name|default:"-" }}</td>
+            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+            <td>{{ user.last_login|date:"d/m/Y H:i"|default:"Jamais" }}</td>
+            <td>{{ user.is_active|yesno:"Oui,Non" }}</td>
+          </tr>
+        {% empty %}
+          <tr class="empty-row">
+            <td colspan="7">Aucun utilisateur trouvé.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if users.has_other_pages %}
+  <div class="pagination">
+    {% if users.has_previous %}
+      <a href="?page=1">&laquo; Première</a>
+      <a href="?page={{ users.previous_page_number }}">Précédente</a>
+    {% endif %}
+    <span class="current">{{ users.number }} / {{ users.paginator.num_pages }}</span>
+    {% if users.has_next %}
+      <a href="?page={{ users.next_page_number }}">Suivante</a>
+      <a href="?page={{ users.paginator.num_pages }}">Dernière &raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
