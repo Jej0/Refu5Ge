@@ -45,6 +45,7 @@ class ItemDetail(DetailView):
     context_object_name = "item"
 
 
+@group_required("avancé")
 def room_device_add(request, pk):
     room = get_object_or_404(Room, pk=pk)
     device = Device.objects.create(room=room, name="", type="")
@@ -53,15 +54,7 @@ def room_device_add(request, pk):
     return redirect(f"{edit_url}?next={next_url}")
 
 
-def add_test(request):
-    if request.method == "POST":
-        form = TestForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-
-    return redirect("test1")
-
+# TODO: gerer le annuler lors de création d'objet
 @group_required("avancé")
 def edit_object(request, model_name, object_id):
     """Vue générique pour éditer n'importe quel modèle"""
@@ -69,7 +62,6 @@ def edit_object(request, model_name, object_id):
         model = apps.get_model('test1', model_name)
     except LookupError:
         return render(request, "test1/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
-
     obj = get_object_or_404(model, pk=object_id)
     form_class = get_generic_form(model)
     next_url = request.GET.get("next", "")

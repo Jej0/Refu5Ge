@@ -9,7 +9,7 @@
     {% empty %}
         <p>Aucun device dans cette room.</p>
     {% endfor %}
-    <a href="{% url 'room_device_add' room.id %}">Ajouter device</a>
+    <a href="{% url 'room_device_add' room.id %}" class="button">Ajouter device</a>
 
-    <a href="{% url 'test1_all_rooms' %}" class="button">Retour</a>
+    <a href="{% url 'all_rooms' %}" class="button">Retour</a>
 {% endblock %}
