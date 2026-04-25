@@ -1,21 +1,21 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block body_class %}profile-page{% endblock %}
+{% block body_class %}login-page{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="profile-wrapper">
-  <div class="profile-card">
+<div class="login-overlay">
 
+    <!-- Avatar (initiale) -->
     <div class="profile-avatar">
       {{ profile_user.username|slice:":1"|upper }}
     </div>
 
-    <h1>{{ profile_user.username }}</h1>
+    <h2>{{ profile_user.username }}</h2>
 
     <div class="profile-field">
       <strong>Prénom</strong>
@@ -45,16 +45,17 @@
       </div>
 
       <div class="profile-actions">
-        <a href="{% url 'accounts:edit_profile' %}" class="btn btn-primary">
-          <i class="fas fa-edit mr-1"></i> Modifier mon profil
+        <a href="{% url 'accounts:edit_profile' %}" class="btn-login" style="width:auto; display:inline-block;">
+          <i class="fas fa-edit mr-1"></i> Modifier
         </a>
-        <a href="{% url 'accounts:password_change' %}" class="btn btn-secondary">
-          <i class="fas fa-lock mr-1"></i> Changer de mot de passe
+        <a href="{% url 'accounts:password_change' %}" class="btn-login" style="width:auto; display:inline-block; background-color:#6b705c;">
+          <i class="fas fa-lock mr-1"></i> Mot de passe
         </a>
       </div>
     {% endif %}
 
-    <a href="{% url 'core:home' %}" class="retour-lien">← Retour à l'accueil</a>
-  </div>
+    <p class="login-link">
+      <a href="{% url 'core:home' %}">← Retour à l'accueil</a>
+    </p>
 </div>
 {% endblock %}
