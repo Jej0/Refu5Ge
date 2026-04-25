@@ -1,3 +1,9 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui;
+}
+
 :root {
     --green-dark: #1b4332;
     --green-main: #2d6a4f;
@@ -7,7 +13,7 @@
     --text-dark: #421f1f;
 }
 
-/* ================= VIDÉO ================= */
+/* ---------- VIDÉO ---------- */
 .hero-safari {
     position: relative;
     height: 100vh;
@@ -56,7 +62,7 @@
 }
 
 .hero-safari-content h1 span {
-    color: #fbbf24; /* ambre clair */
+    color: #fbbf24;
 }
 
 .hero-safari-content p {
@@ -97,28 +103,24 @@
 }
 
 .full-bleed-banner {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;
     height: 500px;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; 
+    background-attachment: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     text-align: center;
+    position: relative;
 }
 
 .full-bleed-banner::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.35);
 }
 
 .full-bleed-banner > * {
@@ -126,11 +128,28 @@
     z-index: 1;
 }
 
+.banner-nuits {
+    background-image: url('https://www.thoiry.net/wp-content/uploads/2024/11/bandeau_site_page_daccueil_nuits_avec_animaux-scaled.jpg');
+}
+
+.banner-title {
+    font-size: 3rem;
+    font-weight: 900;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+}
+
+.banner-subtitle {
+    font-size: 1.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .featured-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    margin-top: -60px; /* pour chevaucher légèrement le hero */
+    margin-top: -60px;
     position: relative;
     z-index: 10;
 }
@@ -175,6 +194,17 @@
     font-size: 0.8rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+}
+
+.animal-placeholder {
+    width: 100%;
+    height: 250px;
+    background: #fef7e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #d4a373;
 }
 
 .title-safari {
@@ -231,8 +261,56 @@
     margin-bottom: 0.5rem;
 }
 
+.badge-date {
+    display: inline-block;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+}
+
+.badge-date.bg-amber-500 { background-color: #f59e0b; }
+.badge-date.bg-green-600  { background-color: #16a34a; }
+.badge-date.bg-blue-600   { background-color: #2563eb; }
+
 .bg-cream {
     background-color: var(--cream);
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+    color: white;
+    padding: 5rem 1.5rem;
+    text-align: center;
+    border-top: 4px solid #fbbf24;
+}
+
+.cta-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+.cta-text {
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    opacity: 0.9;
+}
+
+.cta-section .btn-outline-light {
+    font-size: 1.1rem;
+    padding: 1rem 2.5rem;
+    border-width: 3px;
+}
+
+.cta-section .btn-outline-light:hover {
+    background: #fbbf24;
+    color: #1b4332;
+    border-color: #fbbf24;
 }
 
 .btn-safari {
@@ -267,6 +345,7 @@
     color: var(--green-dark);
 }
 
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
     .quick-actions {
         flex-wrap: wrap;
@@ -277,8 +356,6 @@
     }
 }
 
-/* Supprime l'espace entre la section CTA et le footer sur la page d'accueil */
 .accueil-body footer {
     margin-top: 0 !important;
 }
-
