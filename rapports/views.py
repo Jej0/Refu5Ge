@@ -100,3 +100,57 @@ def historique(request):
     }
 
     return render(request, "rapports/historique.html", context)
+
+def optimisation(request):
+    statistiques_objets = (
+        UtilisationObjet.objects
+        .values("objet__id", "objet__nom", "objet__statut")
+        .annotate(
+            consommation_totale=Sum("consommation"),
+            duree_totale=Sum("duree_minutes"),
+            nombre_utilisations=Count("id")
+        )
+        .order_by("-consommation_totale")
+    )
+
+    objets_a_surveiller = []
+
+    for objet in statistiques_objets:
+        consommation = objet["consommation_totale"] or 0
+        duree = objet["duree_totale"] or 0
+        statut = objet["objet__statut"]
+
+        if duree > 0:
+            consommation_par_minute = consommation / duree
+        else:
+            consommation_par_minute = 0
+
+        raison = None
+
+        if statut == "inactif":
+            raison = "Objet inactif : maintenance ou vérification nécessaire."
+        elif consommation_par_minute > 0.05:
+            raison = "Consommation élevée par rapport à la durée d’utilisation."
+        elif consommation > 3:
+            raison = "Consommation totale importante."
+
+        if raison:
+            objets_a_surveiller.append({
+                "nom": objet["objet__nom"],
+                "statut": statut,
+                "consommation_totale": consommation,
+                "duree_totale": duree,
+                "nombre_utilisations": objet["nombre_utilisations"],
+                "consommation_par_minute": round(consommation_par_minute, 3),
+                "raison": raison,
+            })
+
+    objets_inactifs_sans_utilisation = ObjetConnecte.objects.filter(statut="inactif")
+
+    context = {
+        "statistiques_objets": statistiques_objets,
+        "objets_a_surveiller": objets_a_surveiller,
+        "objets_inactifs_sans_utilisation": objets_inactifs_sans_utilisation,
+    }
+
+    return render(request, "rapports/optimisation.html", context)

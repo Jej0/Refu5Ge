@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Surveillance et optimisation des ressources</h1>
+
+<p>
+    Cette page permet d’identifier les objets connectés inefficaces ou nécessitant une maintenance.
+</p>
+
+<hr>
+
+<h2>Objets à surveiller</h2>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Objet</th>
+        <th>Statut</th>
+        <th>Utilisations</th>
+        <th>Durée totale</th>
+        <th>Consommation totale</th>
+        <th>Consommation/min</th>
+        <th>Raison</th>
+    </tr>
+
+    {% for objet in objets_a_surveiller %}
+    <tr>
+        <td>{{ objet.nom }}</td>
+        <td>{{ objet.statut }}</td>
+        <td>{{ objet.nombre_utilisations }}</td>
+        <td>{{ objet.duree_totale }} min</td>
+        <td>{{ objet.consommation_totale }} kWh</td>
+        <td>{{ objet.consommation_par_minute }} kWh/min</td>
+        <td>{{ objet.raison }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7">Aucun objet inefficace détecté pour le moment.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<h2>Objets inactifs</h2>
+
+<ul>
+    {% for objet in objets_inactifs_sans_utilisation %}
+        <li>{{ objet.nom }} — statut : {{ objet.statut }}</li>
+    {% empty %}
+        <li>Aucun objet inactif.</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h2>Rapport d’optimisation</h2>
+
+<p>
+    Les objets affichés dans cette page peuvent nécessiter une vérification, une maintenance
+    ou une optimisation de leurs paramètres d’utilisation.
+</p>
+
+{% endblock %}
