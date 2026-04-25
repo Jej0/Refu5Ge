@@ -2,11 +2,11 @@ from datetime import date
 
 from django.shortcuts import redirect, render, get_object_or_404
 from django.apps import apps
-from django.utils.decorators import method_decorator
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
 # Create your views here.
-from django.views.generic import ListView, UpdateView, DetailView
+from django.views.generic import ListView, DetailView
 
 from Refu5Ge.decorators import group_required
 from .models import *
@@ -42,7 +42,7 @@ class Test1(ListView):
         return context
 
 
-@method_decorator(group_required("avancé"), name='dispatch')
+
 class AllRooms(ListView):
     model = Room
     template_name = "test1/allRooms.html"
@@ -63,6 +63,14 @@ class ItemDetail(DetailView):
     context_object_name = "item"
 
 
+def room_device_add(request, pk):
+    room = get_object_or_404(Room, pk=pk)
+    device = Device.objects.create(room=room, name="", type="")
+    edit_url = reverse("edit_object", kwargs={"model_name": "Device", "object_id": device.id})
+    next_url = reverse("room_detail", kwargs={"pk": pk})
+    return redirect(f"{edit_url}?next={next_url}")
+
+
 def add_test(request):
     if request.method == "POST":
         form = TestForm(request.POST)
@@ -72,7 +80,7 @@ def add_test(request):
 
     return redirect("test1")
 
-
+@group_required("avancé")
 def edit_object(request, model_name, object_id):
     """Vue générique pour éditer n'importe quel modèle"""
     try:

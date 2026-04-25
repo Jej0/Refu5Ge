@@ -1,5 +1,5 @@
 from django import forms
-from .models import ToDoItem, Test
+from .models import ToDoItem, Test, Device
 
 class ToDoForm(forms.ModelForm):
     class Meta:
@@ -11,6 +11,13 @@ class TestForm(forms.ModelForm):
     class Meta:
         model = Test
         fields = "__all__"  # Inclut tous les champs (title, value)
+
+
+class DeviceForm(forms.ModelForm):
+    class Meta:
+        model = Device
+        # room set in view from URL pk
+        fields = ["name", "type"]
 
 
 def get_generic_form(model_class):

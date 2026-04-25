@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Room: {{ room.name }}</h1>
-  <p>ID: {{ room.id }}</p>
+    <h1>Room: {{ room.name }}</h1>
+    <p>ID: {{ room.id }}</p>
 
-  <h2>Devices</h2>
-  {% for d in room.devices.all %}
-    <p><a href="{% url 'item_detail' d.id %}">{{ d.name }} ({{ d.type }})</a></p>
-  {% empty %}
-    <p>Aucun device dans cette room.</p>
-  {% endfor %}
+    <h2>Devices</h2>
+    {% for d in room.devices.all %}
+        <p><a href="{% url 'item_detail' d.id %}">{{ d.name }} ({{ d.type }})</a></p>
+    {% empty %}
+        <p>Aucun device dans cette room.</p>
+    {% endfor %}
+    <a href="{% url 'room_device_add' room.id %}">Ajouter device</a>
 
-  <a href="{% url 'test1_all_rooms' %}" class="button">Retour</a>
+    <a href="{% url 'test1_all_rooms' %}" class="button">Retour</a>
 {% endblock %}
