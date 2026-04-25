@@ -1,3 +1,4 @@
+/* ====== PAGE CONNEXION – REFUGE INTELLIGENT ====== */
 html, body {
     margin: 0;
     padding: 0;
@@ -131,4 +132,255 @@ html, body {
 .messages .error {
     background-color: #fee2e2;
     color: #991b1b;
+}
+
+/* ====== PROFIL UTILISATEUR (uniquement pour profile_user.html) ====== */
+
+/* Avatar */
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #d4a373;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Champs d'information */
+.profile-field {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 0.8rem;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid #d4a373;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.profile-field strong {
+    color: #2d6a4f;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.profile-field span {
+    color: #333;
+    text-align: right;
+}
+
+/* Statistiques (points / niveau) */
+.profile-stats {
+    background: #fef7e0;
+    border-radius: 0.8rem;
+    padding: 1rem;
+    text-align: center;
+    margin: 1.2rem 0;
+    border: 2px solid #d4a373;
+    font-weight: 600;
+    color: #2d6a4f;
+}
+
+/* Actions (boutons modifier / mot de passe) */
+.profile-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+/* ====== LISTE DES UTILISATEURS – REFUGE INTELLIGENT ====== */
+
+/* Fond de la page avec l'image fournie */
+body.userlist-page {
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+        url('https://www.mnhn.fr/system/files/styles/16_10_highest/private/thumbnails/image/panda_roux_3.jpg.webp?itok=UorAGLHJ')
+        center / cover fixed;
+    color: #2c3e50;
+}
+
+/* Conteneur principal */
+.userlist-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem 1.5rem;
+}
+
+/* Titre principal */
+.userlist-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+/* Lien retour */
+.back-link {
+    margin-bottom: 1.5rem;
+}
+.back-link a {
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    transition: color 0.2s;
+}
+.back-link a:hover {
+    color: #d4a373;
+    text-decoration: underline;
+}
+
+/* ====== TABLEAU ====== */
+.table-wrapper {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    border: 1px solid #d4a373;
+    margin-bottom: 2rem;
+}
+
+.table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-wrapper thead {
+    background-color: rgba(45, 106, 79, 0.08);
+}
+
+.table-wrapper th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 700;
+    color: #2d6a4f;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #d4a373;
+}
+
+.table-wrapper td {
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+    color: #333;
+    border-bottom: 1px solid #f0e5d8;
+}
+
+.table-wrapper tr:last-child td {
+    border-bottom: none;
+}
+
+.table-wrapper tr:hover td {
+    background-color: rgba(45, 106, 79, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+/* Liens du tableau */
+.table-wrapper td a {
+    color: #2d6a4f;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.table-wrapper td a:hover {
+    color: #1b4332;
+    text-decoration: underline;
+}
+
+/* Badges (Admin / Staff) */
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+.badge-admin {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.badge-staff {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* ====== PAGINATION ====== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.pagination a,
+.pagination span.current {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.pagination a {
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid #d4a373;
+    color: #2d6a4f;
+    backdrop-filter: blur(4px);
+}
+
+.pagination a:hover {
+    background-color: #2d6a4f;
+    color: white;
+    border-color: #2d6a4f;
+}
+
+.pagination span.current {
+    background-color: #2d6a4f;
+    color: white;
+    border: 1px solid #2d6a4f;
+}
+
+/* État vide */
+.empty-row td {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+    font-style: italic;
+}
+
+/* Lien retour pour la page profil (bien visible sur fond clair) */
+.profile-back-link {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.profile-back-link a {
+    color: #2d6a4f;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+.profile-back-link a:hover {
+    text-decoration: underline;
+    color: #1b4332;
 }
