@@ -23,34 +23,6 @@ DeviceAttributeFormSet = inlineformset_factory(
 )
 
 
-class AllToDos(ListView):
-    model = ToDoItem
-    template_name = "test1/index.html"
-
-    def get_queryset(self):
-        return ToDoItem.objects.filter(due_date__gte=date.today())
-
-
-class TodayToDos(ListView):
-    model = ToDoItem
-    template_name = "test1/today.html"
-
-    def get_queryset(self):
-        return ToDoItem.objects.filter(due_date=date.today())
-
-
-class Test1(ListView):
-    model = Test
-    template_name = "test1/test1.html"
-
-    def get_queryset(self):
-        return Test.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["form"] = TestForm()
-        return context
-
 
 
 class AllRooms(ListView):

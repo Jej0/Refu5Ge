@@ -1,16 +1,6 @@
 from django import forms
-from .models import ToDoItem, Test, Device
+from .models import *
 
-class ToDoForm(forms.ModelForm):
-    class Meta:
-        model = ToDoItem
-        fields = ['text', 'due_date']
-
-
-class TestForm(forms.ModelForm):
-    class Meta:
-        model = Test
-        fields = "__all__"  # Inclut tous les champs (title, value)
 
 
 class DeviceForm(forms.ModelForm):
