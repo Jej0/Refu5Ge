@@ -27,7 +27,7 @@ DeviceAttributeFormSet = inlineformset_factory(
 
 class AllRooms(ListView):
     model = Room
-    template_name = "test1/allRooms.html"
+    template_name = "gestion/allRooms.html"
 
     def get_queryset(self):
         return Room.objects.all()
@@ -35,13 +35,13 @@ class AllRooms(ListView):
 
 class RoomDetail(DetailView):
     model = Room
-    template_name = "test1/room_detail.html"
+    template_name = "gestion/room_detail.html"
     context_object_name = "room"
 
 
 class ItemDetail(DetailView):
     model = Device
-    template_name = "test1/item_detail.html"
+    template_name = "gestion/item_detail.html"
     context_object_name = "item"
 
 
@@ -59,9 +59,9 @@ def room_device_add(request, pk):
 def edit_object(request, model_name, object_id):
     """Vue générique pour éditer n'importe quel modèle"""
     try:
-        model = apps.get_model('test1', model_name)
+        model = apps.get_model('gestion', model_name)
     except LookupError:
-        return render(request, "test1/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
+        return render(request, "gestion/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
     obj = get_object_or_404(model, pk=object_id)
     form_class = get_generic_form(model)
     next_url = request.GET.get("next", "")
@@ -88,13 +88,13 @@ def edit_object(request, model_name, object_id):
                 require_https=request.is_secure(),
             ):
                 return redirect(next_url)
-            return redirect("test1")
+            return redirect("gestion")
     else:
         form = form_class(instance=obj)
         if is_device:
             attr_formset = DeviceAttributeFormSet(instance=obj, prefix="attrs")
 
-    return render(request, "test1/edit.html", {
+    return render(request, "gestion/edit.html", {
         "form": form,
         "attr_formset": attr_formset,
         "object": obj,
