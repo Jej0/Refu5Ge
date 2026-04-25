@@ -10,11 +10,10 @@
 
 {% block content %}
 
-<!-- VIDÉO  -->
 <section class="hero-safari">
-<video autoplay muted loop playsinline>
-  <source src="https://www.thoiry.net/wp-content/uploads/2025/06/VIDEO-SITE-INTERNET.mp4" type="video/mp4">
-</video>
+  <video autoplay muted loop playsinline>
+    <source src="https://www.thoiry.net/wp-content/uploads/2025/06/VIDEO-SITE-INTERNET.mp4" type="video/mp4">
+  </video>
   <div class="hero-safari-overlay"></div>
   <div class="hero-safari-content">
     <h1>Bienvenue au <span>Refuge Intelligent</span></h1>
@@ -40,9 +39,7 @@
             {% if animal.photo %}
               <img src="{{ animal.photo.url }}" alt="{{ animal.nom }}">
             {% else %}
-              <div style="width:100%;height:250px;background:#fef7e0;display:flex;align-items:center;justify-content:center;font-size:4rem;color:#d4a373;">
-                <i class="fas fa-paw"></i>
-              </div>
+              <div class="animal-placeholder"><i class="fas fa-paw"></i></div>
             {% endif %}
             <div class="card-safari-body">
               <span class="badge">À adopter</span>
@@ -60,10 +57,10 @@
   </div>
 </section>
 
-<section class="full-bleed-banner" style="background-image: url('https://www.thoiry.net/wp-content/uploads/2024/11/bandeau_site_page_daccueil_nuits_avec_animaux-scaled.jpg);">
+<section class="full-bleed-banner banner-nuits">
   <div>
-    <h2 style="font-size:3rem;font-weight:900;text-shadow:2px 2px 8px rgba(0,0,0,0.7);">LES NUITS DE REfU5GE</h2>
-    <p style="font-size:1.5rem;max-width:700px;">Un séjour immersif et insolite grandeur nature aux portes de Cergy.</p>
+    <h2 class="banner-title">LES NUITS DE REfU5GE</h2>
+    <p class="banner-subtitle">Un séjour immersif et insolite grandeur nature aux portes de Cergy.</p>
   </div>
 </section>
 
@@ -98,45 +95,27 @@
       <div class="card-activite">
         <img src="https://f.maformation.fr/edito/sites/3/2022/08/animaux.jpeg" alt="Visite guidée">
         <div class="card-activite-body">
-          <span class="inline-block bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
-            27 avril 2026
-          </span>
+          <span class="badge-date bg-amber-500">27 avril 2026</span>
           <h3>Visite guidée du refuge connecté</h3>
-          <p>
-            Plongez dans les coulisses du refuge : découvrez comment nos colliers GPS, 
-            caméras et thermostats aident nos soigneurs au quotidien. 
-            Une immersion unique ouverte à tous, sur inscription.
-          </p>
+          <p>Plongez dans les coulisses du refuge : découvrez comment nos colliers GPS, caméras et thermostats aident nos soigneurs au quotidien. Une immersion unique ouverte à tous, sur inscription.</p>
         </div>
       </div>
 
       <div class="card-activite">
         <img src="https://i.unimedias.fr/2026/01/13/enfant_et_chien.jpg?auto=format%2Ccompress&crop=faces&cs=tinysrgb&fit=crop&h=501&ixlib=php-4.1.0&w=890" alt="Adoption">
         <div class="card-activite-body">
-          <span class="inline-block bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
-            3 mai 2026
-          </span>
+          <span class="badge-date bg-green-600">3 mai 2026</span>
           <h3>Rencontre adoption : trouvez votre compagnon</h3>
-          <p>
-            Venez rencontrer nos animaux à adopter lors d’une journée spéciale. 
-            Nos soigneurs vous conseilleront et vous pourrez échanger avec les familles 
-            ayant déjà adopté via notre plateforme.
-          </p>
+          <p>Venez rencontrer nos animaux à adopter lors d’une journée spéciale. Nos soigneurs vous conseilleront et vous pourrez échanger avec les familles ayant déjà adopté via notre plateforme.</p>
         </div>
       </div>
 
       <div class="card-activite">
         <img src="https://www.cuidam.fr/wp-content/uploads/2026/01/travail-refuge-pour-animaux-mise-en-avant-e1768380734307.webp" alt="Recrutement">
         <div class="card-activite-body">
-          <span class="inline-block bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
-            Nous recrutons
-          </span>
+          <span class="badge-date bg-blue-600">Nous recrutons</span>
           <h3>Rejoignez l’équipe du Refuge Intelligent</h3>
-          <p>
-            Nous recherchons des passionnés d’animaux et de technologie. 
-            Venez déposer votre CV lors de notre journée portes ouvertes : 
-            un entretien express est possible dans l’heure !
-          </p>
+          <p>Nous recherchons des passionnés d’animaux et de technologie. Venez déposer votre CV lors de notre journée portes ouvertes : un entretien express est possible dans l’heure !</p>
         </div>
       </div>
 
@@ -144,9 +123,9 @@
   </div>
 </section>
 
-<section class="accueil-section" style="background: var(--green-main); color: white; padding: 4rem 0; text-align: center;">
-  <h2 style="font-size:2.5rem;font-weight:900;">Prêt à explorer ?</h2>
-  <p style="max-width:600px;margin:1rem auto;">Recherchez un animal, un objet connecté ou une activité.</p>
+<section class="cta-section">
+  <h2 class="cta-title">Prêt à explorer ?</h2>
+  <p class="cta-text">Recherchez un animal, un objet connecté ou une activité.</p>
   <a href="{% url 'core:recherche' %}" class="btn-outline-light">Lancer une recherche</a>
 </section>
 
