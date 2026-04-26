@@ -2,7 +2,6 @@
 {% block body_class %}auth-page{% endblock %}
 {% block title %}Éditer {{ model_name }}{% endblock %}
 {% block content %}
-    <h1>Éditer {{ model_name }} - {{ object }}</h1>
 <div class="auth-content">
     <div class="card">
         <h2>Éditer {{ model_name }} – {{ object }}</h2>
@@ -34,7 +33,7 @@
         {% if next %}
             <a href="{{ next }}" class="btn btn-secondary btn-full mt-2">Annuler</a>
         {% else %}
-            <a href="{% url 'gestion' %}" class="btn btn-secondary btn-full mt-2">Annuler</a>
+            <a href="{% url 'all_rooms' %}" class="btn btn-secondary btn-full mt-2">Annuler</a>
         {% endif %}
     </form>
     {% if attr_formset %}
@@ -57,4 +56,6 @@
             })();
         </script>
     {% endif %}
+    </div>
+</div>
 {% endblock %}

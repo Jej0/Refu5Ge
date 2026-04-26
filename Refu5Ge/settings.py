@@ -37,14 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rapports',
     'gestion.apps.TodoConfig',
     'core.apps.CoreConfig',
 'rapports.apps.RapportsConfig',
 'accounts.apps.AccountsConfig',
-
-    #####
-    'accounts',
 
 ]
 

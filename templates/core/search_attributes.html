@@ -9,15 +9,19 @@
         <form method="get" class="search-form mb-6">
             <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
                 <div class="flex-grow">
-                    <label class="block text-sm font-medium text-white mb-1">Clé, valeur...</label>
-                    <input type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
+                    <label for="q" class="block text-sm font-medium text-white mb-1">Clé, valeur...</label>
+                    <input id="q" type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-white mb-1">Appareil</label>
-                    <select name="device" class="form-control">
+                    <label for="device" class="block text-sm font-medium text-white mb-1">Appareil</label>
+                    <select id="device" name="device" class="form-control">
                         <option value="">Tous</option>
                         {% for device in devices %}
-                            <option value="{{ device.id }}" {% if request.GET.device == device.id|stringformat:"s" %}selected{% endif %}>{{ device.name }}</option>
+                            {% if request.GET.device == device.id|stringformat:'s' %}
+                                <option value="{{ device.id }}" selected="selected">{{ device.name }}</option>
+                            {% else %}
+                                <option value="{{ device.id }}">{{ device.name }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>

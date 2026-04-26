@@ -66,12 +66,11 @@
                     <tr>
                         <th>Appareil</th>
                         <th>État</th>
-                        <th>Activations</th>
-                        <th>Heures (mois)</th>
-                        <th>Heures (jour)</th>
-                        <th>Conso/h</th>
-                        <th>Conso jour</th>
-                        <th>Conso mois</th>
+                        <th>Nombre d'activations ce mois-ci</th>
+                        <th>Temps total allumé ce mois-ci</th>
+                        <th>Consommation par heure</th>
+                        <th>Consommation du jour</th>
+                        <th>Consommation du mois</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,16 +81,15 @@
                         <td>{{ item.activation_count }}</td>
                         <td>{{ item.month_hours }}</td>
 
-                        <td>{{ item.consumption_per_hour }} kW/h</td>
-                        <td>{{ item.day_consumption }} kW/h</td>
-                        <td>{{ item.month_consumption }} kW/h</td>
+                        <td>{{ item.consumption_per_hour }} kWh</td>
+                        <td>{{ item.day_consumption }} kWh</td>
+                        <td>{{ item.month_consumption }} kWh</td>
                     </tr>
                     {% empty %}
                     <tr><td colspan="7">Aucune donnée disponible pour ce mois.</td></tr>
                     {% endfor %}
                     <tr class="font-bold">
                         <td colspan="5"><strong>Total</strong></td>
-                        <td></td>
                         <td><strong>{{ monthly_report.total_day_consumption }} kWh</strong></td>
                         <td><strong>{{ monthly_report.total_month_consumption }} kWh</strong></td>
                     </tr>

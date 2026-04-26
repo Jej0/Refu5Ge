@@ -9,16 +9,28 @@
         <form method="get" class="search-form mb-6">
             <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
                 <div class="flex-grow">
-                    <label class="block text-sm font-medium text-white mb-1">Nom</label>
-                    <input type="text" name="q" value="{{ query }}" placeholder="Nom de la pièce..." class="form-control w-full">
+                    <label for="q" class="block text-sm font-medium text-white mb-1">Nom</label>
+                    <input id="q" type="text" name="q" value="{{ query }}" placeholder="Nom de la pièce..." class="form-control w-full">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-white mb-1">Nombre d'appareils</label>
-                    <select name="count" class="form-control">
+                    <label for="count" class="block text-sm font-medium text-white mb-1">Nombre d'appareils</label>
+                    <select id="count" name="count" class="form-control">
                         <option value="">Tous</option>
-                        <option value="low" {% if request.GET.count == 'low' %}selected{% endif %}>Moins de 5</option>
-                        <option value="mid" {% if request.GET.count == 'mid' %}selected{% endif %}>5 à 10</option>
-                        <option value="high" {% if request.GET.count == 'high' %}selected{% endif %}>Plus de 10</option>
+                        {% if request.GET.count == 'low' %}
+                            <option value="low" selected="selected">Moins de 5</option>
+                        {% else %}
+                            <option value="low">Moins de 5</option>
+                        {% endif %}
+                        {% if request.GET.count == 'mid' %}
+                            <option value="mid" selected="selected">5 à 10</option>
+                        {% else %}
+                            <option value="mid">5 à 10</option>
+                        {% endif %}
+                        {% if request.GET.count == 'high' %}
+                            <option value="high" selected="selected">Plus de 10</option>
+                        {% else %}
+                            <option value="high">Plus de 10</option>
+                        {% endif %}
                     </select>
                 </div>
                 <div class="flex gap-2 btn-row">
