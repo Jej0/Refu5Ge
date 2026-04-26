@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Rapports statistiques</h1>
+
+<p>
+    Cette page regroupe les rapports disponibles à partir des données des objets connectés.
+</p>
+
+<hr>
+
+<h2>Résumé rapide</h2>
+
+<ul>
+    <li>Nombre de pièces : {{ total_rooms }}</li>
+    <li>Nombre total d’objets connectés : {{ total_devices }}</li>
+    <li>Objets actifs : {{ active_devices }}</li>
+    <li>Objets inactifs : {{ inactive_devices }}</li>
+    <li>Nombre d'événements d’activation : {{ total_logs }}</li>
+</ul>
+
+<a class="button" href="/rapports/global/">Voir le rapport global</a>
+<a class="button" href="/rapports/historique/">Voir l’historique</a>
+<a class="button" href="/rapports/maintenance/">Voir la maintenance</a>
+
+<hr>
+
+<h2>Rapports par pièce</h2>
+
+{% for room in rooms %}
+    <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px;">
+        <h3>{{ room.name }}</h3>
+        <p>Nombre d’objets connectés : {{ room.nombre_objets }}</p>
+        <a class="button" href="/rapports/piece/{{ room.id }}/">Voir le rapport</a>
+    </div>
+{% empty %}
+    <p>Aucune pièce enregistrée dans la base de données.</p>
+{% endfor %}
+
+{% endblock %}

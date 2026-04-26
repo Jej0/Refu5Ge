@@ -1,15 +1,65 @@
 {% extends "base.html" %}
+
 {% block content %}
     <h1>Room: {{ room.name }}</h1>
     <p>ID: {{ room.id }}</p>
 
     <h2>Devices</h2>
+
     {% for d in room.devices.all %}
-        <p><a href="{% url 'item_detail' d.id %}">{{ d.name }} ({{ d.type }}) {% if d.state %}allumé{% else %}éteint{% endif %}</a></p>
+        <p>
+            <a href="{% url 'item_detail' d.id %}">
+                {{ d.name }} ({{ d.type }})
+                {% if d.state %}
+                    allumé
+                {% else %}
+                    éteint
+                {% endif %}
+            </a>
+        </p>
     {% empty %}
         <p>Aucun device dans cette room.</p>
     {% endfor %}
-    <a href="{% url 'room_device_add' room.id %}" class="button">Ajouter device</a>
 
+    <hr>
+
+<h2>Rapport mensuel de la pièce</h2>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Device</th>
+        <th>État actuel</th>
+        <th>Nombre d’activations ce mois</th>
+        <th>Temps total allumé ce mois</th>
+        <th>Consommation par heure</th>
+        <th>Consommation estimée du mois</th>
+    </tr>
+
+    {% for item in monthly_report %}
+    <tr>
+        <td>{{ item.device.name }}</td>
+        <td>
+            {% if item.device.state %}
+                Allumé
+            {% else %}
+                Éteint
+            {% endif %}
+        </td>
+        <td>{{ item.activation_count }}</td>
+        <td>{{ item.total_hours }} h</td>
+        <td>{{ item.consumption_per_hour }} kWh/h</td>
+        <td>{{ item.monthly_consumption }} kWh</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">Aucun rapport disponible pour cette pièce.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+    <hr>
+
+    <a href="{% url 'room_device_add' room.id %}" class="button">Ajouter device</a>
     <a href="{% url 'all_rooms' %}" class="button">Retour</a>
+    <a href="/rapports/piece/{{ room.id }}/csv/" class="button">Télécharger le rapport CSV</a>
 {% endblock %}
