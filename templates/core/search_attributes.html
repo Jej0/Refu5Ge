@@ -33,8 +33,8 @@
         <tbody>
             {% for attr in attributes %}
             <tr>
-                <td>{{ attr.device.name }}</td>
-                <td>{{ attr.device.room.name }}</td>
+                <td><a href="{% url 'item_detail' attr.device.id %}">{{ attr.device.name }}</a></td>
+                <td><a href="{% url 'room_detail' attr.device.room.id %}">{{ attr.device.room.name }}</a></td>
                 <td>{{ attr.key }}</td>
                 <td>{{ attr.value }}</td>
             </tr>
