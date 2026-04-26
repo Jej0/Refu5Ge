@@ -32,11 +32,18 @@ class AllRooms(LoginRequiredMixin, ListView):
         return Room.objects.all()
 
 
-class RoomDetail(LoginRequiredMixin,DetailView):
+class RoomDetail(LoginRequiredMixin, DetailView):
     model = Room
     template_name = "gestion/room_detail.html"
     context_object_name = "room"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        from rapports.views import get_monthly_device_report
+
+        context["monthly_report"] = get_monthly_device_report(self.object)
+        return context
 
 class ItemDetail(LoginRequiredMixin,DetailView):
     model = Device

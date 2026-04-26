@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils import timezone
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -153,12 +155,7 @@ def maintenance(request):
 
 def export_room_csv(request, room_id):
     room = get_object_or_404(Room, id=room_id)
-
-    devices = (
-        Device.objects
-        .filter(room=room)
-        .prefetch_related("attributes", "logs")
-    )
+    monthly_report = get_monthly_device_report(room)
 
     response = HttpResponse(content_type="text/csv; charset=utf-8")
     response["Content-Disposition"] = f'attachment; filename="rapport_{room.name}.csv"'
@@ -166,31 +163,65 @@ def export_room_csv(request, room_id):
     writer = csv.writer(response)
 
     writer.writerow([
-    "Pièce",
-    "Nom de l'objet",
-    "Type",
-    "Description",
-    "État actuel",
-    "Nombre d'historiques",
-    "Consommation par heure",
-    "Attributs",
-])
+        "Pièce",
+        "Device",
+        "État actuel",
+        "Nombre d'activations ce mois",
+        "Temps total allumé ce mois (heures)",
+        "Consommation par heure (kWh/h)",
+        "Consommation estimée du mois (kWh)",
+    ])
 
-
-    for device in devices:
-        attributes_text = " | ".join(
-            [f"{attr.key}: {attr.value}" for attr in device.attributes.all()]
-        )
+    for item in monthly_report:
+        device = item["device"]
 
         writer.writerow([
             room.name,
             device.name,
-            device.type,
-            device.description,
-            "Actif" if device.state else "Inactif",
-            device.logs.count(),
-            device.consumption_per_hour,
-            attributes_text if attributes_text else "Aucun attribut",
+            "Allumé" if device.state else "Éteint",
+            item["activation_count"],
+            item["total_hours"],
+            item["consumption_per_hour"],
+            item["monthly_consumption"],
         ])
 
     return response
+
+def get_monthly_device_report(room):
+    now = timezone.now()
+    start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    report = []
+
+    devices = room.devices.all().prefetch_related("logs")
+
+    for device in devices:
+        logs = device.logs.filter(date__gte=start_month).order_by("date")
+
+        total_active_time = timedelta()
+        activation_start = None
+        activation_count = 0
+
+        for log in logs:
+            if log.state is True:
+                activation_start = log.date
+                activation_count += 1
+            elif log.state is False and activation_start is not None:
+                total_active_time += log.date - activation_start
+                activation_start = None
+
+        if activation_start is not None:
+            total_active_time += now - activation_start
+
+        total_hours = round(total_active_time.total_seconds() / 3600, 2)
+        monthly_consumption = round(total_hours * device.consumption_per_hour, 2)
+
+        report.append({
+            "device": device,
+            "activation_count": activation_count,
+            "total_hours": total_hours,
+            "consumption_per_hour": device.consumption_per_hour,
+            "monthly_consumption": monthly_consumption,
+        })
+
+    return report
