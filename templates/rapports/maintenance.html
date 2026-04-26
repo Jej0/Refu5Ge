@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Maintenance{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Surveillance & optimisation</h1>
+
+        {% if objets_a_surveiller %}
+        <div class="table-wrapper mb-4">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objet</th>
+                        <th>Pièce</th>
+                        <th>État</th>
+                        <th>Historiques</th>
+                        <th>Attributs</th>
+                        <th>Raison</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in objets_a_surveiller %}
+                    <tr>
+                        <td>{{ item.device.name }}</td>
+                        <td>{{ item.room.name }}</td>
+                        <td>{% if item.device.state %}Actif{% else %}Inactif{% endif %}</td>
+                        <td>{{ item.logs_count }}</td>
+                        <td>{{ item.attributes_count }}</td>
+                        <td>{{ item.raison }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-gray-600">Aucun objet à surveiller pour le moment.</p>
+        {% endif %}
+
+        <a href="{% url 'rapports_accueil' %}" class="btn btn-secondary mt-4">Retour aux rapports</a>
+    </div>
+</div>
+{% endblock %}
