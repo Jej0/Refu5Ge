@@ -3,9 +3,6 @@
 
 {% block body_class %}recherche-page{% endblock %}
 {% block main_class %}bg-transparent{% endblock %}
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/recherche.css' %}">
-{% endblock %}
 
 {% block content %}
 
@@ -54,13 +51,13 @@
                 <h3>{{ animal.nom }}</h3>
                 <p>{{ animal.espece }} - {{ animal.race }}</p>
                 <p>{{ animal.description|truncatechars:80 }}</p>
-                {% if animal.disponible_adoption %}<span class="badge">Disponible</span>{% endif %}
+                {% if animal.disponible_adoption %}<span class="badge-recherche">Disponible</span>{% endif %}
               </div>
             </div>
           {% endfor %}
         </div>
       {% else %}
-        <div class="aucun-resultat"><i class="fas fa-search fa-2x mb-3"></i><p>Aucun animal trouvé.</p></div>
+        <div class="aucun-resultat-recherche"><i class="fas fa-search fa-2x mb-3"></i><p>Aucun animal trouvé.</p></div>
       {% endif %}
     </div>
 
@@ -91,13 +88,13 @@
                 <p><i class="fas fa-tag mr-1"></i> {{ objet.categorie.nom }}</p>
                 <p><i class="fas fa-battery-three-quarters mr-1"></i> {{ objet.batterie }}%</p>
                 {% if objet.piece %}<p><i class="fas fa-map-pin mr-1"></i> {{ objet.piece }}</p>{% endif %}
-                <span class="badge">{{ objet.get_etat_display }}</span>
+                <span class="badge-recherche">{{ objet.get_etat_display }}</span>
               </div>
             </div>
           {% endfor %}
         </div>
       {% else %}
-        <div class="aucun-resultat"><i class="fas fa-search fa-2x mb-3"></i><p>Aucun objet trouvé.</p></div>
+        <div class="aucun-resultat-recherche"><i class="fas fa-search fa-2x mb-3"></i><p>Aucun objet trouvé.</p></div>
       {% endif %}
     </div>
 
