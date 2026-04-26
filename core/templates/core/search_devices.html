@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Recherche d'appareils{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Recherche d'appareils</h1>
+
+        <form method="get" class="search-form mb-6">
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
+                <!-- Champ texte -->
+                <div class="flex-grow">
+                    <label class="block text-sm font-medium text-white mb-1">Nom, type…</label>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
+                </div>
+                <!-- Filtre Pièce -->
+                <div>
+                    <label class="block text-sm font-medium text-white mb-1">Pièce</label>
+                    <select name="piece" class="form-control">
+                        <option value="">Toutes</option>
+                        {% for room in rooms %}
+                            <option value="{{ room.id }}" {% if request.GET.piece == room.id|stringformat:"s" %}selected{% endif %}>{{ room.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Filtre État -->
+                <div>
+                    <label class="block text-sm font-medium text-white mb-1">État</label>
+                    <select name="etat" class="form-control">
+                        <option value="">Tous</option>
+                        <option value="actif" {% if request.GET.etat == 'actif' %}selected{% endif %}>Actif</option>
+                        <option value="inactif" {% if request.GET.etat == 'inactif' %}selected{% endif %}>Inactif</option>
+                    </select>
+                </div>
+                <!-- Boutons centrés -->
+                <div class="flex gap-2 btn-row">
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                    <a href="{% url 'core:search_devices' %}" class="btn btn-secondary">Réinitialiser</a>
+                </div>
+            </div>
+        </form>
+
+        {% if devices %}
+        <div style="text-align: center;">
+            <p class="search-result-count">{{ devices|length }} appareil(s) trouvé(s).</p>
+        </div>
+        {% endif %}
+
+        <div class="cards-grid">
+            {% for device in devices %}
+                <div class="card">
+                    <div class="avatar"><i class="fas fa-microchip"></i></div>
+                    <h2>{{ device.name }}</h2>
+                    <div class="info-row"><strong>Type</strong><span>{{ device.type }}</span></div>
+                    <div class="info-row"><strong>Pièce</strong><span>{{ device.room.name }}</span></div>
+                    <div class="info-row"><strong>État</strong><span>{% if device.state %}🟢 Actif{% else %}🔴 Inactif{% endif %}</span></div>
+                    <div class="btn-row mt-3">
+                        <a href="{% url 'item_detail' device.id %}" class="btn btn-primary btn-sm">Détail</a>
+                        {% if user.is_authenticated and user.profile.level == 'manager' %}
+                            <a href="{% url 'edit_object' 'Device' device.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p class="aucun-resultat">Aucun appareil trouvé.</p>
+            {% endfor %}
+        </div>
+
+        <p class="mt-4 text-center">
+            <a href="{% url 'core:home' %}" class="btn btn-secondary">Retour à l'accueil</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
