@@ -1,20 +1,115 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-</head>
-<body>
-    <h1>Bienvenue sur MonSite</h1>
-    <p>Ceci est la page d'accueil.</p>
-    
-    {% if user.is_authenticated %}
-        <p>Bonjour {{ user.username }} !</p>
-        <a href="{% url 'accounts:profile' %}">Mon profil</a> |
-        <a href="{% url 'accounts:logout' %}">Déconnexion</a>
-    {% else %}
-        <a href="{% url 'accounts:login' %}">Connexion</a> |
-        <a href="{% url 'accounts:register' %}">Inscription</a>
-    {% endif %}
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block main_class %}p-0 m-0 bg-green-main{% endblock %}
+{% block body_class %}accueil-body{% endblock %}
+
+{% block content %}
+<section class="hero-safari">
+  <video autoplay muted loop playsinline>
+    <source src="https://www.thoiry.net/wp-content/uploads/2025/06/VIDEO-SITE-INTERNET.mp4" type="video/mp4">
+  </video>
+  <div class="hero-safari-overlay"></div>
+  <div class="hero-safari-content">
+    <h1>Bienvenue au <span>Refuge Intelligent</span></h1>
+    <p>Quand la technologie se met au service des animaux.</p>
+    <a href="#rooms" class="btn-safari">🐾 Explorer les pièces</a>
+  </div>
+
+  <div class="quick-actions">
+    <a href="#rooms"><i class="fas fa-door-open"></i> Pièces</a>
+    <a href="#devices"><i class="fas fa-microchip"></i> Appareils</a>
+    <a href="#programmes"><i class="fas fa-calendar-alt"></i> Programmes</a>
+    <a href="{% url 'core:search_rooms' %}"><i class="fas fa-search"></i> Rechercher</a>
+  </div>
+</section>
+
+<section id="rooms" class="accueil-section bg-cream py-16">
+  <div class="accueil-container">
+    <h2 class="title-safari">Nos pièces connectées</h2>
+    <div class="featured-grid">
+      <div class="card-safari">
+        <div class="card-safari-body">
+          <span class="badge">Infirmerie</span>
+          <h3>Box de soins</h3>
+          <p>Température, caméras et colliers GPS assurent un suivi optimal.</p>
+          <a href="{% url 'all_rooms' %}" class="btn-safari mt-3">Voir les pièces</a>
+        </div>
+      </div>
+      <div class="card-safari">
+        <div class="card-safari-body">
+          <span class="badge">Chenil</span>
+          <h3>Espace de vie</h3>
+          <p>Distributeurs connectés et thermostats pour le confort des pensionnaires.</p>
+          <a href="{% url 'all_rooms' %}" class="btn-safari mt-3">Voir les pièces</a>
+        </div>
+      </div>
+      <div class="card-safari">
+        <div class="card-safari-body">
+          <span class="badge">Extérieur</span>
+          <h3>Zone de détente</h3>
+          <p>Capteurs d'activité et GPS pour suivre les animaux en liberté.</p>
+          <a href="{% url 'all_rooms' %}" class="btn-safari mt-3">Voir les pièces</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="full-bleed-banner banner-nuits">
+  <div>
+    <h2 class="banner-title">LES NUITS DE REfU5GE</h2>
+    <p class="banner-subtitle">Un séjour immersif et insolite grandeur nature aux portes de Cergy.</p>
+  </div>
+</section>
+
+<section id="devices" class="accueil-section bg-white py-16">
+  <div class="accueil-container">
+    <h2 class="title-safari">Technologies & protections populaires</h2>
+    <div class="featured-grid">
+      <div class="card-safari"><div class="card-safari-body"><span class="badge">Actif</span><h3>Thermostats</h3><p><i class="fas fa-thermometer-half"></i> Régulation de la température dans chaque box.</p></div></div>
+      <div class="card-safari"><div class="card-safari-body"><span class="badge">Actif</span><h3>Caméras</h3><p><i class="fas fa-video"></i> Surveillance 24h/24 des espaces de vie.</p></div></div>
+      <div class="card-safari"><div class="card-safari-body"><span class="badge">Actif</span><h3>Colliers GPS</h3><p><i class="fas fa-map-pin"></i> Localisation en temps réel des animaux.</p></div></div>
+      <div class="card-safari"><div class="card-safari-body"><span class="badge">Actif</span><h3>Distributeurs</h3><p><i class="fas fa-bone"></i> Distribution automatique de nourriture.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="programmes" class="accueil-section bg-cream py-16">
+  <div class="accueil-container">
+    <h2 class="title-safari">Actualités à la une</h2>
+    <div class="activites-grid">
+      <div class="card-activite">
+        <img src="https://f.maformation.fr/edito/sites/3/2022/08/animaux.jpeg" alt="Visite guidée">
+        <div class="card-activite-body">
+          <span class="badge-date amber">27 avril 2026</span>
+          <h3>Visite guidée du refuge connecté</h3>
+          <p>Plongez dans les coulisses du refuge : découvrez comment nos colliers GPS, caméras et thermostats aident nos soigneurs au quotidien.</p>
+        </div>
+      </div>
+      <div class="card-activite">
+        <img src="https://i.unimedias.fr/2026/01/13/enfant_et_chien.jpg" alt="Adoption">
+        <div class="card-activite-body">
+          <span class="badge-date green">3 mai 2026</span>
+          <h3>Rencontre adoption : trouvez votre compagnon</h3>
+          <p>Venez rencontrer nos animaux à adopter lors d'une journée spéciale.</p>
+        </div>
+      </div>
+      <div class="card-activite">
+        <img src="https://www.cuidam.fr/wp-content/uploads/2026/01/travail-refuge-pour-animaux-mise-en-avant-e1768380734307.webp" alt="Recrutement">
+        <div class="card-activite-body">
+          <span class="badge-date blue">Nous recrutons</span>
+          <h3>Rejoignez l'équipe du Refuge Intelligent</h3>
+          <p>Venez déposer votre CV lors de notre journée portes ouvertes : un entretien express est possible dans l'heure !</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2 class="cta-title">Prêt à explorer ?</h2>
+  <p class="cta-text">Recherchez une pièce, un appareil ou une activité.</p>
+  <a href="{% url 'core:search_rooms' %}" class="btn-outline-light">Lancer une recherche</a>
+</section>
+{% endblock %}
