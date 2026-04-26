@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Recherche d'attributs{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Recherche d'attributs</h1>
+
+        <form method="get" class="search-form mb-6">
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
+                <div class="flex-grow">
+                    <label class="block text-sm font-medium text-white mb-1">Clé, valeur...</label>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-white mb-1">Appareil</label>
+                    <select name="device" class="form-control">
+                        <option value="">Tous</option>
+                        {% for device in devices %}
+                            <option value="{{ device.id }}" {% if request.GET.device == device.id|stringformat:"s" %}selected{% endif %}>{{ device.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex gap-2 btn-row">
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                    <a href="{% url 'core:search_attributes' %}" class="btn btn-secondary">Réinitialiser</a>
+                </div>
+            </div>
+        </form>
+
+        {% if attributes %}
+        <div style="text-align: center;">
+            <p class="search-result-count">{{ attributes|length }} attribut(s) trouvé(s).</p>
+        </div>
+        {% endif %}
+
+        <div class="cards-grid">
+            {% for attr in attributes %}
+                <div class="card">
+                    <div class="avatar"><i class="fas fa-list"></i></div>
+                    <h2>{{ attr.key }} = {{ attr.value }}</h2>
+                    <div class="info-row"><strong>Appareil</strong><span><a href="{% url 'item_detail' attr.device.id %}">{{ attr.device.name }}</a></span></div>
+                    <div class="info-row"><strong>Pièce</strong><span>{{ attr.device.room.name }}</span></div>
+                </div>
+            {% empty %}
+                <p class="aucun-resultat">Aucun attribut trouvé.</p>
+            {% endfor %}
+        </div>
+
+        <p class="mt-4 text-center">
+            <a href="{% url 'core:home' %}" class="btn btn-secondary">Retour à l'accueil</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
