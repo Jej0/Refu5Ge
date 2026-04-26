@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Rapport global{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Rapport global</h1>
+
+        <div class="cards-grid mb-6">
+            <div class="card text-center">
+                <h3>{{ total_rooms }}</h3>
+                <p class="text-sm text-gray-600">Pièces</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_devices }}</h3>
+                <p class="text-sm text-gray-600">Objets connectés</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ active_devices }}</h3>
+                <p class="text-sm text-gray-600">Actifs</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_logs }}</h3>
+                <p class="text-sm text-gray-600">Événements</p>
+            </div>
+        </div>
+
+        {% if room_most_devices %}
+        <div class="card mb-4">
+            <h2 class="text-lg font-semibold mb-2">Pièce la plus équipée</h2>
+            <p><strong>{{ room_most_devices.name }}</strong> – {{ room_most_devices.nombre_objets }} objet(s)</p>
+        </div>
+        {% endif %}
+
+        <h2 class="text-xl font-semibold mt-4 mb-2">Historique récent</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objet</th>
+                        <th>Pièce</th>
+                        <th>État</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log.device.name }}</td>
+                        <td>{{ log.device.room.name }}</td>
+                        <td>{% if log.state %}Activé{% else %}Désactivé{% endif %}</td>
+                        <td>{{ log.date|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4">Aucun historique récent.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="{% url 'rapports_accueil' %}" class="btn btn-secondary mt-4">Retour aux rapports</a>
+    </div>
+</div>
+{% endblock %}
