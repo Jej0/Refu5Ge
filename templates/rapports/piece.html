@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Rapport – {{ room.name }}{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Rapport pour « {{ room.name }} »</h1>
+
+        <!-- Indicateurs -->
+        <div class="cards-grid mb-6">
+            <div class="card text-center">
+                <h3>{{ total_devices }}</h3>
+                <p class="text-sm text-gray-600">Objets</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ active_devices }}</h3>
+                <p class="text-sm text-gray-600">Actifs</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ inactive_devices }}</h3>
+                <p class="text-sm text-gray-600">Inactifs</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_logs }}</h3>
+                <p class="text-sm text-gray-600">Événements</p>
+            </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="btn-row mb-4">
+            <a href="{% url 'export_room_csv' room.id %}" class="btn btn-primary">
+                <i class="fas fa-download mr-2"></i>Exporter en CSV
+            </a>
+            <a href="{% url 'rapports_accueil' %}" class="btn btn-secondary">Retour aux rapports</a>
+        </div>
+
+        <!-- Tableau des appareils -->
+        <h2 class="text-xl font-semibold mt-4 mb-2">Détail des objets connectés</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objet</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>État</th>
+                        <th>Historiques</th>
+                        <th>Attributs</th>
+                        <th>Observation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in device_stats %}
+                    <tr>
+                        <td>{{ stat.device.name }}</td>
+                        <td>{{ stat.device.type }}</td>
+                        <td>{{ stat.device.description }}</td>
+                        <td>{% if stat.device.state %}Actif{% else %}Inactif{% endif %}</td>
+                        <td>{{ stat.logs_count }}</td>
+                        <td>
+                            {% for attr in stat.attributes %}
+                                {{ attr.key }} : {{ attr.value }}<br>
+                            {% empty %}
+                                Aucun attribut
+                            {% endfor %}
+                        </td>
+                        <td>{{ stat.observation }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7">Aucun objet dans cette pièce.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
