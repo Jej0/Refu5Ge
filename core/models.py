@@ -19,6 +19,8 @@ class Device(models.Model):
     description = models.TextField(max_length=200)
     state = models.BooleanField(default=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='devices')
+    consumption_per_hour = models.FloatField(default=0)
+    
     def __str__(self):
         return f"{self.name}"
 

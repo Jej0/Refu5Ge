@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Surveillance et optimisation des ressources</h1>
+
+<p>
+    Cette page permet d’identifier les objets connectés inefficaces ou nécessitant une vérification.
+</p>
+
+<hr>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Objet</th>
+        <th>Pièce</th>
+        <th>État actuel</th>
+        <th>Nombre d’historiques</th>
+        <th>Nombre d’attributs</th>
+        <th>Raison</th>
+    </tr>
+
+    {% for item in objets_a_surveiller %}
+    <tr>
+        <td>{{ item.device.name }}</td>
+        <td>{{ item.room.name }}</td>
+        <td>
+            {% if item.device.state %}
+                Actif
+            {% else %}
+                Inactif
+            {% endif %}
+        </td>
+        <td>{{ item.logs_count }}</td>
+        <td>{{ item.attributes_count }}</td>
+        <td>{{ item.raison }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">Aucun objet à surveiller pour le moment.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a class="button" href="/rapports/">Retour aux rapports</a>
+
+{% endblock %}

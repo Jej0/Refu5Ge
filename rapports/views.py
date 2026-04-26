@@ -1,156 +1,196 @@
-from django.shortcuts import render
-from django.db.models import Sum, Count
-from .models import ObjetConnecte, Service, UtilisationObjet, HistoriqueDonnee
+import csv
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Count
+from core.models import Room, Device, DeviceAttribute, DeviceLogActivation
 
 
-def dashboard(request):
-    total_objets = ObjetConnecte.objects.count()
+def rapports_accueil(request):
+    rooms = Room.objects.annotate(nombre_objets=Count("devices"))
 
-    objets_actifs = ObjetConnecte.objects.filter(statut="actif").count()
-    objets_inactifs = ObjetConnecte.objects.filter(statut="inactif").count()
+    total_rooms = Room.objects.count()
+    total_devices = Device.objects.count()
+    active_devices = Device.objects.filter(state=True).count()
+    inactive_devices = Device.objects.filter(state=False).count()
+    total_logs = DeviceLogActivation.objects.count()
 
-    total_services = Service.objects.count()
-    total_utilisations = UtilisationObjet.objects.count()
-    total_historiques = HistoriqueDonnee.objects.count()
+    context = {
+        "rooms": rooms,
+        "total_rooms": total_rooms,
+        "total_devices": total_devices,
+        "active_devices": active_devices,
+        "inactive_devices": inactive_devices,
+        "total_logs": total_logs,
+    }
 
-    consommation_totale = UtilisationObjet.objects.aggregate(
-        total=Sum("consommation")
-    )["total"]
+    return render(request, "rapports/accueil.html", context)
 
-    if consommation_totale is None:
-        consommation_totale = 0
 
-    objet_plus_utilise = (
-        UtilisationObjet.objects
-        .values("objet__nom")
-        .annotate(nombre=Count("id"))
-        .order_by("-nombre")
+def rapport_global(request):
+    total_rooms = Room.objects.count()
+    total_devices = Device.objects.count()
+    active_devices = Device.objects.filter(state=True).count()
+    inactive_devices = Device.objects.filter(state=False).count()
+    total_logs = DeviceLogActivation.objects.count()
+
+    room_most_devices = (
+        Room.objects
+        .annotate(nombre_objets=Count("devices"))
+        .order_by("-nombre_objets")
         .first()
     )
 
-    service_plus_utilise = (
-        UtilisationObjet.objects
-        .values("service__nom")
-        .annotate(nombre=Count("id"))
-        .order_by("-nombre")
-        .first()
-    )
-
-    historiques_recents = (
-        HistoriqueDonnee.objects
-        .select_related("objet")
-        .order_by("-date_mesure")[:5]
+    recent_logs = (
+        DeviceLogActivation.objects
+        .select_related("device", "device__room")
+        .order_by("-date")[:10]
     )
 
     context = {
-        "total_objets": total_objets,
-        "objets_actifs": objets_actifs,
-        "objets_inactifs": objets_inactifs,
-        "total_services": total_services,
-        "total_utilisations": total_utilisations,
-        "total_historiques": total_historiques,
-        "consommation_totale": consommation_totale,
-        "objet_plus_utilise": objet_plus_utilise,
-        "service_plus_utilise": service_plus_utilise,
-        "historiques_recents": historiques_recents,
+        "total_rooms": total_rooms,
+        "total_devices": total_devices,
+        "active_devices": active_devices,
+        "inactive_devices": inactive_devices,
+        "total_logs": total_logs,
+        "room_most_devices": room_most_devices,
+        "recent_logs": recent_logs,
     }
 
-    return render(request, "rapports/dashboard.html", context)
+    return render(request, "rapports/global.html", context)
 
 
-def rapport(request):
-    utilisations = (
-        UtilisationObjet.objects
-        .select_related("objet", "service")
-        .order_by("-date_utilisation")
+def rapport_piece(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+
+    devices = (
+        Device.objects
+        .filter(room=room)
+        .prefetch_related("attributes", "logs")
     )
 
-    consommation_totale = utilisations.aggregate(
-        total=Sum("consommation")
-    )["total"]
+    total_devices = devices.count()
+    active_devices = devices.filter(state=True).count()
+    inactive_devices = devices.filter(state=False).count()
 
-    if consommation_totale is None:
-        consommation_totale = 0
+    device_stats = []
 
-    duree_totale = utilisations.aggregate(
-        total=Sum("duree_minutes")
-    )["total"]
+    for device in devices:
+        logs_count = device.logs.count()
+        attributes = device.attributes.all()
 
-    if duree_totale is None:
-        duree_totale = 0
+        if not device.state:
+            observation = "Objet inactif : vérification possible."
+        elif logs_count == 0:
+            observation = "Aucun historique : données insuffisantes."
+        else:
+            observation = "Fonctionnement normal."
+
+        device_stats.append({
+            "device": device,
+            "logs_count": logs_count,
+            "attributes": attributes,
+            "observation": observation,
+        })
 
     context = {
-        "utilisations": utilisations,
-        "consommation_totale": consommation_totale,
-        "duree_totale": duree_totale,
+        "room": room,
+        "devices": devices,
+        "total_devices": total_devices,
+        "active_devices": active_devices,
+        "inactive_devices": inactive_devices,
+        "device_stats": device_stats,
     }
 
-    return render(request, "rapports/rapport.html", context)
+    return render(request, "rapports/piece.html", context)
 
 
 def historique(request):
-    historiques = (
-        HistoriqueDonnee.objects
-        .select_related("objet")
-        .order_by("-date_mesure")
+    logs = (
+        DeviceLogActivation.objects
+        .select_related("device", "device__room")
+        .order_by("-date")
     )
 
     context = {
-        "historiques": historiques,
+        "logs": logs,
     }
 
     return render(request, "rapports/historique.html", context)
 
-def optimisation(request):
-    statistiques_objets = (
-        UtilisationObjet.objects
-        .values("objet__id", "objet__nom", "objet__statut")
-        .annotate(
-            consommation_totale=Sum("consommation"),
-            duree_totale=Sum("duree_minutes"),
-            nombre_utilisations=Count("id")
-        )
-        .order_by("-consommation_totale")
-    )
+
+def maintenance(request):
+    devices = Device.objects.prefetch_related("logs", "attributes").select_related("room")
 
     objets_a_surveiller = []
 
-    for objet in statistiques_objets:
-        consommation = objet["consommation_totale"] or 0
-        duree = objet["duree_totale"] or 0
-        statut = objet["objet__statut"]
-
-        if duree > 0:
-            consommation_par_minute = consommation / duree
-        else:
-            consommation_par_minute = 0
+    for device in devices:
+        logs_count = device.logs.count()
+        attributes_count = device.attributes.count()
 
         raison = None
 
-        if statut == "inactif":
+        if not device.state:
             raison = "Objet inactif : maintenance ou vérification nécessaire."
-        elif consommation_par_minute > 0.05:
-            raison = "Consommation élevée par rapport à la durée d’utilisation."
-        elif consommation > 3:
-            raison = "Consommation totale importante."
+        elif logs_count == 0:
+            raison = "Aucun historique d’activation disponible."
+        elif attributes_count == 0:
+            raison = "Aucun attribut renseigné pour cet objet."
 
         if raison:
             objets_a_surveiller.append({
-                "nom": objet["objet__nom"],
-                "statut": statut,
-                "consommation_totale": consommation,
-                "duree_totale": duree,
-                "nombre_utilisations": objet["nombre_utilisations"],
-                "consommation_par_minute": round(consommation_par_minute, 3),
+                "device": device,
+                "room": device.room,
+                "logs_count": logs_count,
+                "attributes_count": attributes_count,
                 "raison": raison,
             })
 
-    objets_inactifs_sans_utilisation = ObjetConnecte.objects.filter(statut="inactif")
-
     context = {
-        "statistiques_objets": statistiques_objets,
         "objets_a_surveiller": objets_a_surveiller,
-        "objets_inactifs_sans_utilisation": objets_inactifs_sans_utilisation,
     }
 
-    return render(request, "rapports/optimisation.html", context)
+    return render(request, "rapports/maintenance.html", context)
+
+def export_room_csv(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+
+    devices = (
+        Device.objects
+        .filter(room=room)
+        .prefetch_related("attributes", "logs")
+    )
+
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="rapport_{room.name}.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+    "Pièce",
+    "Nom de l'objet",
+    "Type",
+    "Description",
+    "État actuel",
+    "Nombre d'historiques",
+    "Consommation par heure",
+    "Attributs",
+])
+
+
+    for device in devices:
+        attributes_text = " | ".join(
+            [f"{attr.key}: {attr.value}" for attr in device.attributes.all()]
+        )
+
+        writer.writerow([
+            room.name,
+            device.name,
+            device.type,
+            device.description,
+            "Actif" if device.state else "Inactif",
+            device.logs.count(),
+            device.consumption_per_hour,
+            attributes_text if attributes_text else "Aucun attribut",
+        ])
+
+    return response
