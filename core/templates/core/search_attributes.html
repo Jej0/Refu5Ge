@@ -40,7 +40,7 @@
                     <div class="avatar"><i class="fas fa-list"></i></div>
                     <h2>{{ attr.key }} = {{ attr.value }}</h2>
                     <div class="info-row"><strong>Appareil</strong><span><a href="{% url 'item_detail' attr.device.id %}">{{ attr.device.name }}</a></span></div>
-                    <div class="info-row"><strong>Pièce</strong><span><a href="{% url 'room_detail' attr.device.room.id %}">{{ attr.device.room.name }}</a></span></div>
+                    <div class="info-row"><strong>Pièce</strong><span>{{ attr.device.room.name }}</span></div>
                 </div>
             {% empty %}
                 <p class="aucun-resultat">Aucun attribut trouvé.</p>

@@ -63,6 +63,7 @@ def rapport_global(request):
 
 def rapport_piece(request, room_id):
     room = get_object_or_404(Room, id=room_id)
+    total_logs = DeviceLogActivation.objects.filter(device__room=room).count()  # ← ajout
 
     devices = (
         Device.objects
@@ -75,18 +76,15 @@ def rapport_piece(request, room_id):
     inactive_devices = devices.filter(state=False).count()
 
     device_stats = []
-
     for device in devices:
         logs_count = device.logs.count()
         attributes = device.attributes.all()
-
         if not device.state:
             observation = "Objet inactif : vérification possible."
         elif logs_count == 0:
             observation = "Aucun historique : données insuffisantes."
         else:
             observation = "Fonctionnement normal."
-
         device_stats.append({
             "device": device,
             "logs_count": logs_count,
@@ -96,13 +94,12 @@ def rapport_piece(request, room_id):
 
     context = {
         "room": room,
-        "devices": devices,
+        "total_logs": total_logs,         
         "total_devices": total_devices,
         "active_devices": active_devices,
         "inactive_devices": inactive_devices,
         "device_stats": device_stats,
     }
-
     return render(request, "rapports/piece.html", context)
 
 
@@ -187,78 +184,41 @@ def export_room_csv(request, room_id):
 
     return response
 
-from datetime import timedelta
-from django.utils import timezone
-
-
 def get_monthly_device_report(room):
     now = timezone.now()
     start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    start_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    report_items = []
-
-    total_day_consumption = 0
-    total_month_consumption = 0
+    report = []
 
     devices = room.devices.all().prefetch_related("logs")
 
     for device in devices:
-        logs_month = device.logs.filter(date__gte=start_month).order_by("date")
-        logs_day = device.logs.filter(date__gte=start_day).order_by("date")
+        logs = device.logs.filter(date__gte=start_month).order_by("date")
 
-        total_month_active_time = timedelta()
-        total_day_active_time = timedelta()
-
+        total_active_time = timedelta()
         activation_start = None
         activation_count = 0
 
-        for log in logs_month:
-            if log.state:
+        for log in logs:
+            if log.state is True:
                 activation_start = log.date
                 activation_count += 1
-            elif not log.state and activation_start is not None:
-                total_month_active_time += log.date - activation_start
+            elif log.state is False and activation_start is not None:
+                total_active_time += log.date - activation_start
                 activation_start = None
 
         if activation_start is not None:
-            total_month_active_time += now - activation_start
+            total_active_time += now - activation_start
 
-        activation_start_day = None
+        total_hours = round(total_active_time.total_seconds() / 3600, 2)
+        monthly_consumption = round(total_hours * device.consumption_per_hour, 2)
 
-        for log in logs_day:
-            if log.state:
-                activation_start_day = log.date
-            elif not log.state and activation_start_day is not None:
-                total_day_active_time += log.date - activation_start_day
-                activation_start_day = None
-
-        if activation_start_day is not None:
-            total_day_active_time += now - activation_start_day
-
-        month_hours = round(total_month_active_time.total_seconds() / 3600, 2)
-        day_hours = round(total_day_active_time.total_seconds() / 3600, 2)
-
-        consumption_per_hour = device.consumption_per_hour or 0
-
-        month_consumption = round(month_hours * consumption_per_hour, 2)
-        day_consumption = round(day_hours * consumption_per_hour, 2)
-
-        total_month_consumption += month_consumption
-        total_day_consumption += day_consumption
-
-        report_items.append({
+        report.append({
             "device": device,
             "activation_count": activation_count,
-            "month_hours": month_hours,
-            "day_hours": day_hours,
-            "consumption_per_hour": consumption_per_hour,
-            "day_consumption": day_consumption,
-            "month_consumption": month_consumption,
+            "total_hours": total_hours,
+            "consumption_per_hour": device.consumption_per_hour,
+            "monthly_consumption": monthly_consumption,
         })
 
-    return {
-        "items": report_items,
-        "total_day_consumption": round(total_day_consumption, 2),
-        "total_month_consumption": round(total_month_consumption, 2),
-    }
+    return report

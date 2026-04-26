@@ -45,7 +45,8 @@ class RoomDetail(LoginRequiredMixin, DetailView):
         context["monthly_report"] = get_monthly_device_report(self.object)
         return context
 
-class ItemDetail(LoginRequiredMixin,DetailView):
+
+class ItemDetail(LoginRequiredMixin, DetailView):
     model = Device
     template_name = "gestion/item_detail.html"
     context_object_name = "item"
@@ -79,6 +80,7 @@ def edit_object(request, model_name, object_id):
         model = apps.get_model('core', model_name)
     except LookupError:
         return render(request, "gestion/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
+
     obj = get_object_or_404(model, pk=object_id)
     form_class = get_generic_form(model)
     next_url = request.GET.get("next") or request.META.get("HTTP_REFERER", "")
@@ -89,7 +91,10 @@ def edit_object(request, model_name, object_id):
         form = form_class(request.POST, instance=obj)
         next_url = request.POST.get("next") or next_url
         if is_device:
-            attr_formset = DeviceAttributeFormSet(request.POST, instance=obj, prefix="attrs", queryset=obj.attributes.exclude(key="state"))
+            attr_formset = DeviceAttributeFormSet(
+                request.POST, instance=obj, prefix="attrs",
+                queryset=obj.attributes.exclude(key="state")
+            )
 
         form_ok = form.is_valid()
         attrs_ok = attr_formset.is_valid() if attr_formset is not None else True
@@ -109,7 +114,10 @@ def edit_object(request, model_name, object_id):
     else:
         form = form_class(instance=obj)
         if is_device:
-            attr_formset = DeviceAttributeFormSet(instance=obj, prefix="attrs", queryset=obj.attributes.exclude(key="state"))
+            attr_formset = DeviceAttributeFormSet(
+                instance=obj, prefix="attrs",
+                queryset=obj.attributes.exclude(key="state")
+            )
 
     return render(request, "gestion/edit.html", {
         "form": form,
@@ -129,5 +137,5 @@ def toggle_device(request, pk):
     d = get_object_or_404(Device, pk=pk)
     d.state = not d.state
     d.save(update_fields=["state"])
-    DeviceLogActivation.objects.create(device=d, state=d.state,)
+    DeviceLogActivation.objects.create(device=d, state=d.state)
     return redirect(request.POST.get("next") or "item_detail", pk=d.pk)

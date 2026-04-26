@@ -1,73 +1,110 @@
 {% extends "base.html" %}
-
+{% block body_class %}auth-page{% endblock %}
+{% block title %}{{ room.name }} – Détail{% endblock %}
 {% block content %}
-    <h1>Room: {{ room.name }}</h1>
-    <p>ID: {{ room.id }}</p>
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">{{ room.name }}</h1>
 
-    <h2>Devices</h2>
+        <!-- Indicateurs rapides -->
+        <div class="cards-grid mb-6">
+            <div class="card text-center">
+                <h3>{{ room.devices.count }}</h3>
+                <p class="text-sm text-gray-600">Appareils</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_logs }}</h3>
+                <p class="text-sm text-gray-600">Événements</p>
+            </div>
+        </div>
 
-    {% for d in room.devices.all %}
-        <p>
-            <a href="{% url 'item_detail' d.id %}">
-                {{ d.name }} ({{ d.type }})
-                {% if d.state %}
-                    allumé
-                {% else %}
-                    éteint
-                {% endif %}
-            </a>
-        </p>
-    {% empty %}
-        <p>Aucun device dans cette room.</p>
-    {% endfor %}
-
-    <hr>
-
-<h2>Rapport mensuel de la pièce</h2>
-
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Device</th>
-        <th>État actuel</th>
-        <th>Nombre d’activations ce mois</th>
-        <th>Temps total allumé ce mois</th>
-        <th>Consommation par heure</th>
-        <th>Consommation du jour</th>
-        <th>Consommation estimée du mois</th>
-    </tr>
-
-    {% for item in monthly_report.items %}
-    <tr>
-        <td>{{ item.device.name }}</td>
-        <td>
-            {% if item.device.state %}
-                Allumé
-            {% else %}
-                Éteint
+        <!-- Boutons d'action -->
+        <div class="btn-row mb-4">
+            {% if user.profile.level == 'manager' %}
+                <a href="{% url 'room_device_add' room.id %}" class="btn btn-primary">Ajouter un appareil</a>
             {% endif %}
-        </td>
-        <td>{{ item.activation_count }}</td>
-        <td>{{ item.month_hours }} h</td>
-        <td>{{ item.consumption_per_hour }} kWh/h</td>
-        <td>{{ item.day_consumption }} kWh</td>
-        <td>{{ item.month_consumption }} kWh</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="7">Aucun rapport disponible pour cette pièce.</td>
-    </tr>
-    {% endfor %}
+            <a href="{% url 'all_rooms' %}" class="btn btn-secondary">Retour aux pièces</a>
+        </div>
 
-    <tr>
-        <td colspan="5"><strong>Total</strong></td>
-        <td><strong>{{ monthly_report.total_day_consumption }} kWh</strong></td>
-        <td><strong>{{ monthly_report.total_month_consumption }} kWh</strong></td>
-    </tr>
-</table>
+        <!-- Liste des appareils -->
+        <h2 class="text-xl font-semibold mt-4 mb-2">Appareils de la pièce</h2>
+        <div class="table-wrapper mb-6">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>État</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in room.devices.all %}
+                    <tr>
+                        <td>{{ device.name }}</td>
+                        <td>{{ device.type }}</td>
+                        <td>{% if device.state %}🟢 Actif{% else %}🔴 Inactif{% endif %}</td>
+                        <td>
+                            <a href="{% url 'item_detail' device.id %}" class="btn btn-primary btn-sm">Détail</a>
+                            {% if user.profile.level == 'manager' %}
+                                <a href="{% url 'edit_object' 'Device' device.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4">Aucun appareil dans cette pièce.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <hr>
+        <!-- Rapport mensuel / journalier -->
+        <h2 class="text-xl font-semibold mt-6 mb-2">Rapport de consommation</h2>
+        <div class="table-wrapper mb-6">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Appareil</th>
+                        <th>État</th>
+                        <th>Activations</th>
+                        <th>Heures (mois)</th>
+                        <th>Heures (jour)</th>
+                        <th>Conso/h</th>
+                        <th>Conso jour</th>
+                        <th>Conso mois</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in monthly_report.items %}
+                    <tr>
+                        <td>{{ item.device.name }}</td>
+                        <td>{% if item.device.state %}🟢{% else %}🔴{% endif %}</td>
+                        <td>{{ item.activation_count }}</td>
+                        <td>{{ item.month_hours }}</td>
 
-    <a href="{% url 'room_device_add' room.id %}" class="button">Ajouter device</a>
-    <a href="{% url 'all_rooms' %}" class="button">Retour</a>
-    <a href="/rapports/piece/{{ room.id }}/csv/" class="button">Télécharger le rapport CSV</a>
+                        <td>{{ item.consumption_per_hour }} kW/h</td>
+                        <td>{{ item.day_consumption }} kW/h</td>
+                        <td>{{ item.month_consumption }} kW/h</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7">Aucune donnée disponible pour ce mois.</td></tr>
+                    {% endfor %}
+                    <tr class="font-bold">
+                        <td colspan="5"><strong>Total</strong></td>
+                        <td></td>
+                        <td><strong>{{ monthly_report.total_day_consumption }} kWh</strong></td>
+                        <td><strong>{{ monthly_report.total_month_consumption }} kWh</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Export CSV -->
+        <div class="text-center mt-4">
+            <a href="/rapports/piece/{{ room.id }}/csv/" class="btn btn-primary">
+                <i class="fas fa-download mr-2"></i>Exporter le rapport CSV
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}
