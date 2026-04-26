@@ -50,6 +50,15 @@ class ItemDetail(LoginRequiredMixin,DetailView):
     template_name = "gestion/item_detail.html"
     context_object_name = "item"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["back_url"] = (
+            self.request.GET.get("next")
+            or self.request.META.get("HTTP_REFERER")
+            or reverse("all_rooms")
+        )
+        return context
+
 
 
 
@@ -72,13 +81,13 @@ def edit_object(request, model_name, object_id):
         return render(request, "gestion/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
     obj = get_object_or_404(model, pk=object_id)
     form_class = get_generic_form(model)
-    next_url = request.GET.get("next", "")
+    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER", "")
     is_device = model == Device
     attr_formset = None
 
     if request.method == "POST":
         form = form_class(request.POST, instance=obj)
-        next_url = request.POST.get("next", "")
+        next_url = request.POST.get("next") or next_url
         if is_device:
             attr_formset = DeviceAttributeFormSet(request.POST, instance=obj, prefix="attrs", queryset=obj.attributes.exclude(key="state"))
 
