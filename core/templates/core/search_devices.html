@@ -28,6 +28,7 @@
                 <th>Nom</th>
                 <th>Type</th>
                 <th>Pièce</th>
+                <th>État</th>
                 <th>Attributs</th>
             </tr>
         </thead>
@@ -35,9 +36,10 @@
             {% for device in devices %}
             <tr>
                 <td>{{ device.id }}</td>
-                <td>{{ device.name }}</td>
+                <td><a href="{% url 'item_detail' device.id %}">{{ device.name }}</a></td>
                 <td>{{ device.type }}</td>
                 <td>{{ device.room.name }}</td>
+                <td>{% if d.state %}allumé{% else %}éteint{% endif %}</td>
                 <td>{{ device.attributes.count }}</td>
             </tr>
             {% empty %}

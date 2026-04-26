@@ -5,7 +5,7 @@ from datetime import date, timedelta
 
 from django.test import TestCase
 from django.urls import reverse
-from .models import ToDoItem
+from core.models importToDoItem
 
 
 def create_todo(todo_text, days):

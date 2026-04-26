@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Item: {{ item.name }}</h1>
-  <p>ID: {{ item.id }}</p>
+    <h1>Item: {{ item.name }}</h1>
+    <p>ID: {{ item.id }}</p>
 
-  <h2>Devices</h2>
-  {% for i in item.attributes.all %}
-    <p>{{ i.key }} : ({{ i.value }})</p>
-  {% endfor %}
+    {% for i in item.attributes.all %}
+        <p>{{ i.key }} : ({{ i.value }})</p>
+    {% endfor %}
+    <form method="post" action="{% url 'toggle_device' item.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button type="submit">
+            {% if item.state %}Eteindre{% else %}Allumer{% endif %}
+        </button>
+    </form>
     <a href="{% url 'edit_object' 'Device' item.id %}?next={{ request.get_full_path|urlencode }}">Modification</a>
-  <a href="{% url 'all_rooms' %}" class="button">Retour</a>
+    <a href="{% url 'all_rooms' %}" class="button">Retour</a>
 {% endblock %}

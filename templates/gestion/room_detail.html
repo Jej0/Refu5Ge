@@ -5,7 +5,7 @@
 
     <h2>Devices</h2>
     {% for d in room.devices.all %}
-        <p><a href="{% url 'item_detail' d.id %}">{{ d.name }} ({{ d.type }})</a></p>
+        <p><a href="{% url 'item_detail' d.id %}">{{ d.name }} ({{ d.type }}) {% if d.state %}allumé{% else %}éteint{% endif %}</a></p>
     {% empty %}
         <p>Aucun device dans cette room.</p>
     {% endfor %}

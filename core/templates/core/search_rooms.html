@@ -33,7 +33,7 @@
             {% for room in rooms %}
             <tr>
                 <td>{{ room.id }}</td>
-                <td>{{ room.name }}</td>
+                <td><a href="{% url 'room_detail' room.id %}">{{ room.name }}</a></td>
                 <td>{{ room.devices.count }}</td>
             </tr>
             {% empty %}

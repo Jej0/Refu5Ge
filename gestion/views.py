@@ -1,18 +1,19 @@
 from datetime import date
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect, render, get_object_or_404
 from django.apps import apps
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 from django.views.generic import ListView, DetailView
 
 from Refu5Ge.decorators import group_required
-from .models import *
+from core.models import *
 from .forms import *
-
 
 DeviceAttributeFormSet = inlineformset_factory(
     Device,
@@ -23,9 +24,7 @@ DeviceAttributeFormSet = inlineformset_factory(
 )
 
 
-
-
-class AllRooms(ListView):
+class AllRooms(LoginRequiredMixin, ListView):
     model = Room
     template_name = "gestion/allRooms.html"
 
@@ -33,13 +32,13 @@ class AllRooms(ListView):
         return Room.objects.all()
 
 
-class RoomDetail(DetailView):
+class RoomDetail(LoginRequiredMixin,DetailView):
     model = Room
     template_name = "gestion/room_detail.html"
     context_object_name = "room"
 
 
-class ItemDetail(DetailView):
+class ItemDetail(LoginRequiredMixin,DetailView):
     model = Device
     template_name = "gestion/item_detail.html"
     context_object_name = "item"
@@ -83,9 +82,9 @@ def edit_object(request, model_name, object_id):
                 attr_formset.instance = saved_obj
                 attr_formset.save()
             if next_url and url_has_allowed_host_and_scheme(
-                next_url,
-                allowed_hosts={request.get_host()},
-                require_https=request.is_secure(),
+                    next_url,
+                    allowed_hosts={request.get_host()},
+                    require_https=request.is_secure(),
             ):
                 return redirect(next_url)
             return redirect("gestion")
@@ -101,3 +100,16 @@ def edit_object(request, model_name, object_id):
         "model_name": model_name,
         "next": next_url,
     })
+
+
+
+
+
+@require_POST
+@group_required("avancé")
+def toggle_device(request, pk):
+    d = get_object_or_404(Device, pk=pk)
+    d.state = not d.state
+    d.save(update_fields=["state"])
+    DeviceLogActivation.objects.create(device=d, state=d.state,)
+    return redirect(request.POST.get("next") or "item_detail", pk=d.pk)
