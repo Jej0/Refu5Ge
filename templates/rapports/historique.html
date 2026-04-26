@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Historique des objets connectés</h1>
+
+<p>
+    Cette page affiche l’historique des activations et désactivations des objets connectés.
+</p>
+
+<hr>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Objet</th>
+        <th>Pièce</th>
+        <th>État enregistré</th>
+        <th>Date</th>
+    </tr>
+
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.device.name }}</td>
+        <td>{{ log.device.room.name }}</td>
+        <td>
+            {% if log.state %}
+                Activé
+            {% else %}
+                Désactivé
+            {% endif %}
+        </td>
+        <td>{{ log.date }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">Aucun historique disponible.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a class="button" href="/rapports/">Retour aux rapports</a>
+
+{% endblock %}

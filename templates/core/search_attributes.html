@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recherche d'attributs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Recherche d'attributs d'appareils</h1>
+    <form method="get">
+        <input type="text" name="q" value="{{ query }}" placeholder="Clé, valeur, appareil...">
+        <button type="submit">Rechercher</button>
+        <a href="{% url 'core:search_attributes' %}">Réinitialiser</a>
+    </form>
+
+    {% if query %}
+        <p>Résultats pour "{{ query }}" : {{ attributes|length }} attribut(s) trouvé(s).</p>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Appareil</th>
+                <th>Pièce</th>
+                <th>Clé</th>
+                <th>Valeur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attr in attributes %}
+            <tr>
+                <td><a href="{% url 'item_detail' attr.device.id %}">{{ attr.device.name }}</a></td>
+                <td><a href="{% url 'room_detail' attr.device.room.id %}">{{ attr.device.room.name }}</a></td>
+                <td>{{ attr.key }}</td>
+                <td>{{ attr.value }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Aucun attribut trouvé.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{% url 'core:home' %}">Retour à l'accueil</a></p>
+</body>
+</html>

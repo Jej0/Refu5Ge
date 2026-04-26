@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #333;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ccc;
+            margin-bottom: 20px;
+            padding-left: 0;
+            list-style: none;
+        }
+        .tab {
+            padding: 10px 20px;
+            margin-right: 5px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+        }
+        .tab a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .tab:hover {
+            background-color: #ddd;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom: 2px solid white;
+            margin-bottom: -2px;
+        }
+        .user-info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenue sur MonSite</h1>
+    <p>Ceci est la page d'accueil. Utilisez les onglets ci-dessous pour rechercher dans la base de données.</p>
+
+    <!-- Onglets de recherche -->
+    <ul class="tabs">
+        <li class="tab"><a href="{% url 'core:search_rooms' %}">🔍 Rechercher des pièces</a></li>
+        <li class="tab"><a href="{% url 'core:search_devices' %}">🔍 Rechercher des appareils</a></li>
+        <li class="tab"><a href="{% url 'core:search_attributes' %}">🔍 Rechercher des attributs</a></li>
+    </ul>
+
+    <!-- Section utilisateur -->
+    <div class="user-info">
+        {% if user.is_authenticated %}
+            <p>Bonjour <strong>{{ user.username }}</strong> !</p>
+            <p>
+                <a href="{% url 'accounts:profile' user.id %}">Mon profil</a>
+
+                <form action="{% url 'accounts:logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; color: #0000EE; text-decoration: underline; cursor: pointer; padding: 0; font: inherit;">
+                        Déconnexion
+                    </button>
+                </form>
+        {% else %}
+            <p>
+                <a href="{% url 'accounts:login' %}">Connexion</a> |
+                <a href="{% url 'accounts:register' %}">Inscription</a>
+            </p>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'accounts:user_list' %}">Liste des utilisateurs</a>
+
+        {% endif %}
+    </div>
+
+
+
+</body>
+</html>

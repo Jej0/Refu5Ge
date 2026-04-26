@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Rapport de la pièce : {{ room.name }}</h1>
+
+<p>
+    Ce rapport présente les objets connectés associés à cette pièce.
+</p>
+
+<hr>
+
+<h2>Résumé</h2>
+
+<ul>
+    <li>Nombre d’objets dans cette pièce : {{ total_devices }}</li>
+    <li>Objets actifs : {{ active_devices }}</li>
+    <li>Objets inactifs : {{ inactive_devices }}</li>
+</ul>
+
+<hr>
+
+<h2>Détail des objets connectés</h2>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Objet</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>État actuel</th>
+        <th>Nombre d’historiques</th>
+        <th>Attributs</th>
+        <th>Observation</th>
+    </tr>
+
+    {% for stat in device_stats %}
+    <tr>
+        <td>{{ stat.device.name }}</td>
+        <td>{{ stat.device.type }}</td>
+        <td>{{ stat.device.description }}</td>
+        <td>
+            {% if stat.device.state %}
+                Actif
+            {% else %}
+                Inactif
+            {% endif %}
+        </td>
+        <td>{{ stat.logs_count }}</td>
+        <td>
+            {% for attr in stat.attributes %}
+                {{ attr.key }} : {{ attr.value }}<br>
+            {% empty %}
+                Aucun attribut
+            {% endfor %}
+        </td>
+        <td>{{ stat.observation }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7">Aucun objet dans cette pièce.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a class="button" href="/rapports/">Retour aux rapports</a>
+
+{% endblock %}

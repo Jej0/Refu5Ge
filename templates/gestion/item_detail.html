@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ item.name }}</h1>
+<p>Type :{{item.type}}</p>
+<p>description : {{ item.description }}</p>
+<p>pièce : {{item.room}}</p>
+<p>état : {% if item.state %}allumé{% else %}éteint{% endif %}</p>
+
+{% if item.attributes.exists %}
+<h2>Attributs</h2>
+{% for i in item.attributes.all %}
+<p>{{ i.key }} : ({{ i.value }})</p>
+{% endfor %}
+{% endif %}
+
+<form method="post" action="{% url 'toggle_device' item.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <button type="submit">
+        {% if item.state %}Eteindre{% else %}Allumer{% endif %}
+    </button>
+</form>
+<a href="{% url 'edit_object' 'Device' item.id %}?next={{ request.get_full_path|urlencode }}">Modification</a>
+<a href="{% url 'all_rooms' %}" class="button">Retour</a>
+{% endblock %}

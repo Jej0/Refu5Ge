@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>All Rooms</h1>
+    {% for room in object_list %}
+        <p><a href="{% url 'room_detail' room.id %}">{{ room.name }}</a></p>
+    {% empty %}
+        <p>Aucune room.</p>
+    {% endfor %}
+{% endblock %}

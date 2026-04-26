@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recherche d'appareils</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Recherche d'appareils</h1>
+    <form method="get">
+        <input type="text" name="q" value="{{ query }}" placeholder="Nom, type, pièce...">
+        <button type="submit">Rechercher</button>
+        <a href="{% url 'core:search_devices' %}">Réinitialiser</a>
+    </form>
+
+    {% if query %}
+        <p>Résultats pour "{{ query }}" : {{ devices|length }} appareil(s) trouvé(s).</p>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Pièce</th>
+                <th>État</th>
+                <th>Attributs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td>{{ device.id }}</td>
+                <td><a href="{% url 'item_detail' device.id %}">{{ device.name }}</a></td>
+                <td>{{ device.type }}</td>
+                <td>{{ device.room.name }}</td>
+                <td>{% if device.state %}allumé{% else %}éteint{% endif %}</td>
+                <td>{{ device.attributes.count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Aucun appareil trouvé.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{% url 'core:home' %}">Retour à l'accueil</a></p>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recherche de pièces</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Recherche de pièces</h1>
+    <form method="get">
+        <input type="text" name="q" value="{{ query }}" placeholder="Nom de la pièce...">
+        <button type="submit">Rechercher</button>
+        <a href="{% url 'core:search_rooms' %}">Réinitialiser</a>
+    </form>
+
+    {% if query %}
+        <p>Résultats pour "{{ query }}" : {{ rooms|length }} pièce(s) trouvée(s).</p>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Nombre d'appareils</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room.id }}</td>
+                <td><a href="{% url 'room_detail' room.id %}">{{ room.name }}</a></td>
+                <td>{{ room.devices.count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Aucune pièce trouvée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{% url 'core:home' %}">Retour à l'accueil</a></p>
+</body>
+</html>
