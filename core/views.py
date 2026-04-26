@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from django.db.models import Q, Count
 
+@login_required()
 def search_rooms(request):
     query = request.GET.get('q', '')
     count = request.GET.get('count', '')
@@ -33,7 +34,7 @@ def search_rooms(request):
         'rooms': rooms,
         'query': query,
     })
-
+@login_required()
 def search_devices(request):
     query = request.GET.get('q', '')
     piece = request.GET.get('piece', '')      # nouveau filtre
@@ -68,6 +69,7 @@ def search_devices(request):
         'query': query,
         'rooms': rooms,
     })
+@login_required()
 def search_attributes(request):
     query = request.GET.get('q', '')
     device_id = request.GET.get('device', '')
