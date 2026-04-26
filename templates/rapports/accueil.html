@@ -1,40 +1,49 @@
 {% extends "base.html" %}
-
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Rapports – Accueil{% endblock %}
 {% block content %}
-<h1>Rapports statistiques</h1>
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Rapports statistiques</h1>
 
-<p>
-    Cette page regroupe les rapports disponibles à partir des données des objets connectés.
-</p>
+        <div class="cards-grid mb-6">
+            <div class="card text-center">
+                <h3>{{ total_rooms }}</h3>
+                <p class="text-sm text-gray-600">Pièces</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_devices }}</h3>
+                <p class="text-sm text-gray-600">Objets connectés</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ active_devices }}</h3>
+                <p class="text-sm text-gray-600">Actifs</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_logs }}</h3>
+                <p class="text-sm text-gray-600">Événements</p>
+            </div>
+        </div>
 
-<hr>
+        <div class="btn-row">
+            <a href="{% url 'rapport_global' %}" class="btn btn-primary">Rapport global</a>
+            <a href="{% url 'rapports_historique' %}" class="btn btn-secondary">Historique</a>
+            <a href="{% url 'rapports_maintenance' %}" class="btn btn-secondary">Maintenance</a>
+        </div>
 
-<h2>Résumé rapide</h2>
-
-<ul>
-    <li>Nombre de pièces : {{ total_rooms }}</li>
-    <li>Nombre total d’objets connectés : {{ total_devices }}</li>
-    <li>Objets actifs : {{ active_devices }}</li>
-    <li>Objets inactifs : {{ inactive_devices }}</li>
-    <li>Nombre d'événements d’activation : {{ total_logs }}</li>
-</ul>
-
-<a class="button" href="/rapports/global/">Voir le rapport global</a>
-<a class="button" href="/rapports/historique/">Voir l’historique</a>
-<a class="button" href="/rapports/maintenance/">Voir la maintenance</a>
-
-<hr>
-
-<h2>Rapports par pièce</h2>
-
-{% for room in rooms %}
-    <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px;">
-        <h3>{{ room.name }}</h3>
-        <p>Nombre d’objets connectés : {{ room.nombre_objets }}</p>
-        <a class="button" href="/rapports/piece/{{ room.id }}/">Voir le rapport</a>
+        <h2 class="text-xl font-semibold mt-6 mb-4">Rapports par pièce</h2>
+        <div class="cards-grid">
+            {% for room in rooms %}
+                <div class="card">
+                    <div class="avatar"><i class="fas fa-door-open"></i></div>
+                    <h2>{{ room.name }}</h2>
+                    <div class="info-row"><strong>Objets</strong><span>{{ room.nombre_objets }}</span></div>
+                    <a href="{% url 'rapport_piece' room.id %}" class="btn btn-primary btn-sm mt-3">Voir le rapport</a>
+                </div>
+            {% empty %}
+                <p class="aucun-resultat">Aucune pièce enregistrée.</p>
+            {% endfor %}
+        </div>
     </div>
-{% empty %}
-    <p>Aucune pièce enregistrée dans la base de données.</p>
-{% endfor %}
-
+</div>
 {% endblock %}

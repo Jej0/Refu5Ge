@@ -9,19 +9,15 @@
         <form method="get" class="search-form mb-6">
             <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
                 <div class="flex-grow">
-                    <label for="q" class="block text-sm font-medium text-white mb-1">Clé, valeur...</label>
-                    <input id="q" type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
+                    <label class="block text-sm font-medium text-white mb-1">Clé, valeur...</label>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
                 </div>
                 <div>
-                    <label for="device" class="block text-sm font-medium text-white mb-1">Appareil</label>
-                    <select id="device" name="device" class="form-control">
+                    <label class="block text-sm font-medium text-white mb-1">Appareil</label>
+                    <select name="device" class="form-control">
                         <option value="">Tous</option>
                         {% for device in devices %}
-                            {% if request.GET.device == device.id|stringformat:'s' %}
-                                <option value="{{ device.id }}" selected="selected">{{ device.name }}</option>
-                            {% else %}
-                                <option value="{{ device.id }}">{{ device.name }}</option>
-                            {% endif %}
+                            <option value="{{ device.id }}" {% if request.GET.device == device.id|stringformat:"s" %}selected{% endif %}>{{ device.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -44,7 +40,7 @@
                     <div class="avatar"><i class="fas fa-list"></i></div>
                     <h2>{{ attr.key }} = {{ attr.value }}</h2>
                     <div class="info-row"><strong>Appareil</strong><span><a href="{% url 'item_detail' attr.device.id %}">{{ attr.device.name }}</a></span></div>
-                    <div class="info-row"><strong>Pièce</strong><span><a href="{% url 'room_detail' attr.device.room.id %}">{{ attr.device.room.name }}</a></span></div>
+                    <div class="info-row"><strong>Pièce</strong><span>{{ attr.device.room.name }}</span></div>
                 </div>
             {% empty %}
                 <p class="aucun-resultat">Aucun attribut trouvé.</p>

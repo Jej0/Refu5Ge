@@ -1,47 +1,43 @@
 {% extends "base.html" %}
-
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Maintenance{% endblock %}
 {% block content %}
-<h1>Surveillance et optimisation des ressources</h1>
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Surveillance & optimisation</h1>
 
-<p>
-    Cette page permet d’identifier les objets connectés inefficaces ou nécessitant une vérification.
-</p>
+        {% if objets_a_surveiller %}
+        <div class="table-wrapper mb-4">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objet</th>
+                        <th>Pièce</th>
+                        <th>État</th>
+                        <th>Historiques</th>
+                        <th>Attributs</th>
+                        <th>Raison</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in objets_a_surveiller %}
+                    <tr>
+                        <td>{{ item.device.name }}</td>
+                        <td>{{ item.room.name }}</td>
+                        <td>{% if item.device.state %}Actif{% else %}Inactif{% endif %}</td>
+                        <td>{{ item.logs_count }}</td>
+                        <td>{{ item.attributes_count }}</td>
+                        <td>{{ item.raison }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-gray-600">Aucun objet à surveiller pour le moment.</p>
+        {% endif %}
 
-<hr>
-
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Objet</th>
-        <th>Pièce</th>
-        <th>État actuel</th>
-        <th>Nombre d’historiques</th>
-        <th>Nombre d’attributs</th>
-        <th>Raison</th>
-    </tr>
-
-    {% for item in objets_a_surveiller %}
-    <tr>
-        <td>{{ item.device.name }}</td>
-        <td>{{ item.room.name }}</td>
-        <td>
-            {% if item.device.state %}
-                Actif
-            {% else %}
-                Inactif
-            {% endif %}
-        </td>
-        <td>{{ item.logs_count }}</td>
-        <td>{{ item.attributes_count }}</td>
-        <td>{{ item.raison }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="6">Aucun objet à surveiller pour le moment.</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<br>
-<a class="button" href="/rapports/">Retour aux rapports</a>
-
+        <a href="{% url 'rapports_accueil' %}" class="btn btn-secondary mt-4">Retour aux rapports</a>
+    </div>
+</div>
 {% endblock %}

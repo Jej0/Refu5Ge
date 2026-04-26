@@ -1,29 +1,39 @@
 {% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Éditer {{ model_name }}{% endblock %}
 {% block content %}
-    <h1>Éditer {{ model_name }} - {{ object }}</h1>
+<div class="auth-content">
+    <div class="card">
+        <h2>Éditer {{ model_name }} – {{ object }}</h2>
 
     <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
-        {{ form.as_p }}
+        {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}<p class="error-message">{{ field.errors.0 }}</p>{% endif %}
+                </div>
+            {% endfor %}
         {% if attr_formset %}
-            <h2>Attributs</h2>
-            {{ attr_formset.management_form }}
+            <h3 class="mt-4">Attributs supplémentaires</h3>
+                {{ attr_formset.management_form }}
             <div id="attrs-forms">
                 {% for f in attr_formset %}
                     <div class="attr-form-row">{{ f.as_p }}</div>
                 {% endfor %}
             </div>
-            <button type="button" id="add-attr-row">+ Attribut</button>
+            <button type="button" id="add-attr-row" class="btn btn-secondary mt-2">+ Attribut</button>
             <template id="empty-attr-form-template">
                 <div class="attr-form-row">{{ attr_formset.empty_form.as_p }}</div>
             </template>
         {% endif %}
-        <button type="submit">Sauvegarder</button>
+        <button type="submit" class="btn btn-primary btn-full mt-4">Sauvegarder</button>
         {% if next %}
-            <a href="{{ next }}" class="button">Annuler</a>
+            <a href="{{ next }}" class="btn btn-secondary btn-full mt-2">Annuler</a>
         {% else %}
-            <a href="{% url 'gestion' %}" class="button">Annuler</a>
+            <a href="{% url 'all_rooms' %}" class="btn btn-secondary btn-full mt-2">Annuler</a>
         {% endif %}
     </form>
     {% if attr_formset %}
@@ -46,5 +56,6 @@
             })();
         </script>
     {% endif %}
+    </div>
+</div>
 {% endblock %}
-

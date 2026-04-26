@@ -1,25 +1,39 @@
 {% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}{{ item.name }}{% endblock %}
 {% block content %}
-<h1>{{ item.name }}</h1>
-<p>Type :{{item.type}}</p>
-<p>description : {{ item.description }}</p>
-<p>pièce : {{item.room}}</p>
-<p>état : {% if item.state %}allumé{% else %}éteint{% endif %}</p>
+<div class="auth-content">
+    <div class="card">
+        <h2>{{ item.name }}</h2>
+        <div class="info-row"><strong>Type</strong><span>{{ item.type }}</span></div>
+        <div class="info-row"><strong>Pièce</strong><span><a href="{% url 'room_detail' item.room.id %}">{{ item.room.name }}</a></span>
+        </div>
+        <div class="info-row"><strong>État</strong><span>{% if item.state %}🟢 Actif{% else %}🔴 Inactif{% endif %}</span>
+        </div>
+        <div class="info-row"><strong>consommation (kW/h)</strong><span>{{ item.consumption_per_hour }}</span></div>
+        {% if item.description %}
+        <div class="info-row"><strong>Description</strong><span>{{ item.description }}</span></div>
+        {% endif %}
 
-{% if item.attributes.exists %}
-<h2>Attributs</h2>
-{% for i in item.attributes.all %}
-<p>{{ i.key }} : ({{ i.value }})</p>
-{% endfor %}
-{% endif %}
 
-<form method="post" action="{% url 'toggle_device' item.id %}">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.get_full_path }}">
-    <button type="submit">
-        {% if item.state %}Eteindre{% else %}Allumer{% endif %}
-    </button>
-</form>
-<a href="{% url 'edit_object' 'Device' item.id %}?next={{ request.get_full_path|urlencode }}">Modification</a>
-<a href="{% url 'all_rooms' %}" class="button">Retour</a>
+        <h3 class="mt-4 mb-2">Attributs supplémentaires</h3>
+        {% for attr in item.attributes.all %}
+        <div class="info-row"><strong>{{ attr.key }}</strong><span>{{ attr.value }}</span></div>
+        {% empty %}
+        <p class="text-gray-500">Aucun attribut supplémentaire.</p>
+        {% endfor %}
+        <div class="btn-column mt-4">
+            <form method="post" action="{% url 'toggle_device' item.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="btn btn-primary btn-full">
+                    {% if item.state %}Eteindre{% else %}Allumer{% endif %}
+                </button>
+            </form>
+            <a href="{% url 'edit_object' 'Device' item.id %}?next={{ request.get_full_path|urlencode }}"
+               class="btn btn-secondary btn-full">Modification</a>
+            <a href="{% url 'room_detail' item.room.id %}" class="btn btn-secondary btn-full">Retour</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

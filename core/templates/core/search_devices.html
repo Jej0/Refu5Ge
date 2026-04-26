@@ -10,38 +10,26 @@
             <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
                 <!-- Champ texte -->
                 <div class="flex-grow">
-                    <label for="q" class="block text-sm font-medium text-white mb-1">Nom, type…</label>
-                    <input id="q" type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
+                    <label class="block text-sm font-medium text-white mb-1">Nom, type…</label>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Rechercher..." class="form-control w-full">
                 </div>
                 <!-- Filtre Pièce -->
                 <div>
-                    <label for="piece" class="block text-sm font-medium text-white mb-1">Pièce</label>
-                    <select id="piece" name="piece" class="form-control">
+                    <label class="block text-sm font-medium text-white mb-1">Pièce</label>
+                    <select name="piece" class="form-control">
                         <option value="">Toutes</option>
                         {% for room in rooms %}
-                            {% if request.GET.piece == room.id|stringformat:'s' %}
-                                <option value="{{ room.id }}" selected="selected">{{ room.name }}</option>
-                            {% else %}
-                                <option value="{{ room.id }}">{{ room.name }}</option>
-                            {% endif %}
+                            <option value="{{ room.id }}" {% if request.GET.piece == room.id|stringformat:"s" %}selected{% endif %}>{{ room.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <!-- Filtre État -->
                 <div>
-                    <label for="etat" class="block text-sm font-medium text-white mb-1">État</label>
-                    <select id="etat" name="etat" class="form-control">
+                    <label class="block text-sm font-medium text-white mb-1">État</label>
+                    <select name="etat" class="form-control">
                         <option value="">Tous</option>
-                        {% if request.GET.etat == 'actif' %}
-                            <option value="actif" selected="selected">Actif</option>
-                        {% else %}
-                            <option value="actif">Actif</option>
-                        {% endif %}
-                        {% if request.GET.etat == 'inactif' %}
-                            <option value="inactif" selected="selected">Inactif</option>
-                        {% else %}
-                            <option value="inactif">Inactif</option>
-                        {% endif %}
+                        <option value="actif" {% if request.GET.etat == 'actif' %}selected{% endif %}>Actif</option>
+                        <option value="inactif" {% if request.GET.etat == 'inactif' %}selected{% endif %}>Inactif</option>
                     </select>
                 </div>
                 <!-- Boutons centrés -->
@@ -64,7 +52,7 @@
                     <div class="avatar"><i class="fas fa-microchip"></i></div>
                     <h2>{{ device.name }}</h2>
                     <div class="info-row"><strong>Type</strong><span>{{ device.type }}</span></div>
-                    <div class="info-row"><strong>Pièce</strong><span><a href="{% url 'room_detail' device.room.id %}">{{ device.room.name }}</a></span></div>
+                    <div class="info-row"><strong>Pièce</strong><span>{{ device.room.name }}</span></div>
                     <div class="info-row"><strong>État</strong><span>{% if device.state %}🟢 Actif{% else %}🔴 Inactif{% endif %}</span></div>
                     <div class="btn-row mt-3">
                         <a href="{% url 'item_detail' device.id %}" class="btn btn-primary btn-sm">Détail</a>

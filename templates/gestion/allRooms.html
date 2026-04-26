@@ -1,9 +1,25 @@
 {% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Gestion des pièces{% endblock %}
 {% block content %}
-    <h1>All Rooms</h1>
-    {% for room in object_list %}
-        <p><a href="{% url 'room_detail' room.id %}">{{ room.name }}</a></p>
-    {% empty %}
-        <p>Aucune room.</p>
-    {% endfor %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Toutes les pièces</h1>
+
+        <div class="cards-grid">
+            {% for room in object_list %}
+                <div class="card">
+                    <div class="avatar"><i class="fas fa-door-open"></i></div>
+                    <h2>{{ room.name }}</h2>
+                    <div class="info-row"><strong>Appareils</strong><span>{{ room.devices.count }}</span></div>
+                    <div class="btn-row mt-3">
+                        <a href="{% url 'room_detail' room.id %}" class="btn btn-primary btn-sm">Détail</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="aucun-resultat">Aucune pièce enregistrée.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,60 +1,64 @@
 {% extends "base.html" %}
-
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Rapport global{% endblock %}
 {% block content %}
-<h1>Rapport global</h1>
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Rapport global</h1>
 
-<p>
-    Ce rapport donne une vue générale de l’utilisation des objets connectés de la plateforme.
-</p>
+        <div class="cards-grid mb-6">
+            <div class="card text-center">
+                <h3>{{ total_rooms }}</h3>
+                <p class="text-sm text-gray-600">Pièces</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_devices }}</h3>
+                <p class="text-sm text-gray-600">Objets connectés</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ active_devices }}</h3>
+                <p class="text-sm text-gray-600">Actifs</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_logs }}</h3>
+                <p class="text-sm text-gray-600">Événements</p>
+            </div>
+        </div>
 
-<hr>
+        {% if room_most_devices %}
+        <div class="card mb-4">
+            <h2 class="text-lg font-semibold mb-2">Pièce la plus équipée</h2>
+            <p><strong>{{ room_most_devices.name }}</strong> – {{ room_most_devices.nombre_objets }} objet(s)</p>
+        </div>
+        {% endif %}
 
-<h2>Statistiques générales</h2>
+        <h2 class="text-xl font-semibold mt-4 mb-2">Historique récent</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objet</th>
+                        <th>Pièce</th>
+                        <th>État</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log.device.name }}</td>
+                        <td>{{ log.device.room.name }}</td>
+                        <td>{% if log.state %}Activé{% else %}Désactivé{% endif %}</td>
+                        <td>{{ log.date|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4">Aucun historique récent.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-<ul>
-    <li>Nombre total de pièces : {{ total_rooms }}</li>
-    <li>Nombre total d’objets connectés : {{ total_devices }}</li>
-    <li>Objets actifs : {{ active_devices }}</li>
-    <li>Objets inactifs : {{ inactive_devices }}</li>
-    <li>Nombre total d’événements d’activation : {{ total_logs }}</li>
-    {% if room_most_devices %}
-        <li>Pièce avec le plus d’objets : {{ room_most_devices.name }} avec {{ room_most_devices.nombre_objets }} objet(s)</li>
-    {% endif %}
-</ul>
-
-<hr>
-
-<h2>Historique récent</h2>
-
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Objet</th>
-        <th>Pièce</th>
-        <th>État enregistré</th>
-        <th>Date</th>
-    </tr>
-
-    {% for log in recent_logs %}
-    <tr>
-        <td>{{ log.device.name }}</td>
-        <td>{{ log.device.room.name }}</td>
-        <td>
-            {% if log.state %}
-                Activé
-            {% else %}
-                Désactivé
-            {% endif %}
-        </td>
-        <td>{{ log.date }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="4">Aucun historique disponible.</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<br>
-<a class="button" href="/rapports/">Retour aux rapports</a>
-
+        <a href="{% url 'rapports_accueil' %}" class="btn btn-secondary mt-4">Retour aux rapports</a>
+    </div>
+</div>
 {% endblock %}
