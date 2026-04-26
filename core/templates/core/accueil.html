@@ -1,12 +1,8 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block main_class %}p-0 m-0 bg-[#2d6a4f]{% endblock %}
+{% block main_class %}p-0 m-0 bg-green-main{% endblock %}
 {% block body_class %}accueil-body{% endblock %}
-
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/accueil_safari.css' %}">
-{% endblock %}
 
 {% block content %}
 
@@ -95,7 +91,7 @@
       <div class="card-activite">
         <img src="https://f.maformation.fr/edito/sites/3/2022/08/animaux.jpeg" alt="Visite guidée">
         <div class="card-activite-body">
-          <span class="badge-date bg-amber-500">27 avril 2026</span>
+          <span class="badge-date amber">27 avril 2026</span>
           <h3>Visite guidée du refuge connecté</h3>
           <p>Plongez dans les coulisses du refuge : découvrez comment nos colliers GPS, caméras et thermostats aident nos soigneurs au quotidien. Une immersion unique ouverte à tous, sur inscription.</p>
         </div>
@@ -104,7 +100,7 @@
       <div class="card-activite">
         <img src="https://i.unimedias.fr/2026/01/13/enfant_et_chien.jpg?auto=format%2Ccompress&crop=faces&cs=tinysrgb&fit=crop&h=501&ixlib=php-4.1.0&w=890" alt="Adoption">
         <div class="card-activite-body">
-          <span class="badge-date bg-green-600">3 mai 2026</span>
+          <span class="badge-date green">3 mai 2026</span>
           <h3>Rencontre adoption : trouvez votre compagnon</h3>
           <p>Venez rencontrer nos animaux à adopter lors d’une journée spéciale. Nos soigneurs vous conseilleront et vous pourrez échanger avec les familles ayant déjà adopté via notre plateforme.</p>
         </div>
@@ -113,7 +109,7 @@
       <div class="card-activite">
         <img src="https://www.cuidam.fr/wp-content/uploads/2026/01/travail-refuge-pour-animaux-mise-en-avant-e1768380734307.webp" alt="Recrutement">
         <div class="card-activite-body">
-          <span class="badge-date bg-blue-600">Nous recrutons</span>
+          <span class="badge-date blue">Nous recrutons</span>
           <h3>Rejoignez l’équipe du Refuge Intelligent</h3>
           <p>Nous recherchons des passionnés d’animaux et de technologie. Venez déposer votre CV lors de notre journée portes ouvertes : un entretien express est possible dans l’heure !</p>
         </div>
