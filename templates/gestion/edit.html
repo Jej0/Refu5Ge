@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Éditer {{ model_name }}{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="card">
+        <h2>Éditer {{ model_name }} – {{ object }}</h2>
+
+        <!-- Formulaire d'édition -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}<p class="error-message">{{ field.errors.0 }}</p>{% endif %}
+                </div>
+            {% endfor %}
+
+            {% if attr_formset %}
+                <h3 class="mt-4">Attributs supplémentaires</h3>
+                {{ attr_formset.management_form }}
+                <div id="attrs-forms">
+                    {% for f in attr_formset %}
+                        <div class="attr-form-row">{{ f.as_p }}</div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="add-attr-row" class="btn btn-secondary mt-2">+ Attribut</button>
+                <template id="empty-attr-form-template">
+                    <div class="attr-form-row">{{ attr_formset.empty_form.as_p }}</div>
+                </template>
+
+                <script>
+                    (function(){
+                        const container = document.getElementById("attrs-forms");
+                        const addButton = document.getElementById("add-attr-row");
+                        if (!container || !addButton) return;
+                        const totalForms = document.getElementById("id_attrs-TOTAL_FORMS");
+                        const template = document.getElementById("empty-attr-form-template");
+                        if (!totalForms || !template) return;
+                        addButton.addEventListener("click", function(){
+                            const index = parseInt(totalForms.value, 10);
+                            const html = template.innerHTML.replace(/__prefix__/g, index);
+                            container.insertAdjacentHTML("beforeend", html);
+                            totalForms.value = index + 1;
+                        });
+                    })();
+                </script>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-full mt-4">Sauvegarder</button>
+
+            {% if created %}
+                <form method="post" action="{% url 'delete_device' object.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-full mt-2">Annuler (supprimer)</button>
+                </form>
+            {% else %}
+                {% if next %}
+                    <a href="{{ next }}" class="btn btn-secondary btn-full mt-2">Annuler</a>
+                {% else %}
+                    <a href="{% url 'all_rooms' %}" class="btn btn-secondary btn-full mt-2">Annuler</a>
+                {% endif %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
