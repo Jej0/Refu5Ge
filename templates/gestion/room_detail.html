@@ -32,10 +32,11 @@
         <th>Nombre d’activations ce mois</th>
         <th>Temps total allumé ce mois</th>
         <th>Consommation par heure</th>
+        <th>Consommation du jour</th>
         <th>Consommation estimée du mois</th>
     </tr>
 
-    {% for item in monthly_report %}
+    {% for item in monthly_report.items %}
     <tr>
         <td>{{ item.device.name }}</td>
         <td>
@@ -46,15 +47,22 @@
             {% endif %}
         </td>
         <td>{{ item.activation_count }}</td>
-        <td>{{ item.total_hours }} h</td>
+        <td>{{ item.month_hours }} h</td>
         <td>{{ item.consumption_per_hour }} kWh/h</td>
-        <td>{{ item.monthly_consumption }} kWh</td>
+        <td>{{ item.day_consumption }} kWh</td>
+        <td>{{ item.month_consumption }} kWh</td>
     </tr>
     {% empty %}
     <tr>
-        <td colspan="6">Aucun rapport disponible pour cette pièce.</td>
+        <td colspan="7">Aucun rapport disponible pour cette pièce.</td>
     </tr>
     {% endfor %}
+
+    <tr>
+        <td colspan="5"><strong>Total</strong></td>
+        <td><strong>{{ monthly_report.total_day_consumption }} kWh</strong></td>
+        <td><strong>{{ monthly_report.total_month_consumption }} kWh</strong></td>
+    </tr>
 </table>
 
     <hr>
