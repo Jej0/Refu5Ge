@@ -46,7 +46,7 @@ class ItemDetail(LoginRequiredMixin,DetailView):
 
 
 
-@group_required("avancé")
+@group_required("manager")
 def room_device_add(request, pk):
     room = get_object_or_404(Room, pk=pk)
     device = Device.objects.create(room=room, name="", type="")
@@ -56,7 +56,7 @@ def room_device_add(request, pk):
 
 
 # TODO: gerer le annuler lors de création d'objet
-@group_required("avancé")
+@group_required("manager")
 def edit_object(request, model_name, object_id):
     """Vue générique pour éditer n'importe quel modèle"""
     try:
@@ -108,7 +108,7 @@ def edit_object(request, model_name, object_id):
 
 
 @require_POST
-@group_required("avancé")
+@group_required("manager")
 def toggle_device(request, pk):
     d = get_object_or_404(Device, pk=pk)
     d.state = not d.state
