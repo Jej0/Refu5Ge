@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Rapports – Accueil{% endblock %}
+{% block content %}
+<div class="auth-content">
+    <div class="userlist-container">
+        <h1 class="userlist-title">Rapports statistiques</h1>
+
+        <div class="cards-grid mb-6">
+            <div class="card text-center">
+                <h3>{{ total_rooms }}</h3>
+                <p class="text-sm text-gray-600">Pièces</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_devices }}</h3>
+                <p class="text-sm text-gray-600">Objets connectés</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ active_devices }}</h3>
+                <p class="text-sm text-gray-600">Actifs</p>
+            </div>
+            <div class="card text-center">
+                <h3>{{ total_logs }}</h3>
+                <p class="text-sm text-gray-600">Événements</p>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <a href="{% url 'rapport_global' %}" class="btn btn-primary">Rapport global</a>
+            <a href="{% url 'rapports_historique' %}" class="btn btn-secondary">Historique</a>
+            <a href="{% url 'rapports_maintenance' %}" class="btn btn-secondary">Maintenance</a>
+        </div>
+
+        <h2 class="text-xl font-semibold mt-6 mb-4">Rapports par pièce</h2>
+        <div class="cards-grid">
+            {% for room in rooms %}
+                <div class="card">
+                    <div class="avatar"><i class="fas fa-door-open"></i></div>
+                    <h2>{{ room.name }}</h2>
+                    <div class="info-row"><strong>Objets</strong><span>{{ room.nombre_objets }}</span></div>
+                    <a href="{% url 'rapport_piece' room.id %}" class="btn btn-primary btn-sm mt-3">Voir le rapport</a>
+                </div>
+            {% empty %}
+                <p class="aucun-resultat">Aucune pièce enregistrée.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
