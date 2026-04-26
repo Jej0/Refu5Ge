@@ -4,6 +4,7 @@
 <p>Type :{{item.type}}</p>
 <p>description : {{ item.description }}</p>
 <p>pièce : {{item.room}}</p>
+    <p>consommation (kW/h) {{ item.consumption_per_hour }}</p>
 <p>état : {% if item.state %}allumé{% else %}éteint{% endif %}</p>
 
 {% if item.attributes.exists %}
