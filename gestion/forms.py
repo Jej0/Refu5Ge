@@ -15,5 +15,8 @@ def get_generic_form(model_class):
     class GenericForm(forms.ModelForm):
         class Meta:
             model = model_class
-            fields = "__all__"
+            if model_class == Device:
+                fields = ["name", "type", "description", "room"]
+            else:
+                fields = "__all__"
     return GenericForm

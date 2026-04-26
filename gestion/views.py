@@ -58,7 +58,7 @@ def room_device_add(request, pk):
 def edit_object(request, model_name, object_id):
     """Vue générique pour éditer n'importe quel modèle"""
     try:
-        model = apps.get_model('gestion', model_name)
+        model = apps.get_model('core', model_name)
     except LookupError:
         return render(request, "gestion/error.html", {"error": f"Modèle '{model_name}' non trouvé"})
     obj = get_object_or_404(model, pk=object_id)
@@ -71,7 +71,7 @@ def edit_object(request, model_name, object_id):
         form = form_class(request.POST, instance=obj)
         next_url = request.POST.get("next", "")
         if is_device:
-            attr_formset = DeviceAttributeFormSet(request.POST, instance=obj, prefix="attrs")
+            attr_formset = DeviceAttributeFormSet(request.POST, instance=obj, prefix="attrs", queryset=obj.attributes.exclude(key="state"))
 
         form_ok = form.is_valid()
         attrs_ok = attr_formset.is_valid() if attr_formset is not None else True
@@ -87,11 +87,11 @@ def edit_object(request, model_name, object_id):
                     require_https=request.is_secure(),
             ):
                 return redirect(next_url)
-            return redirect("gestion")
+            return redirect("all_rooms")
     else:
         form = form_class(instance=obj)
         if is_device:
-            attr_formset = DeviceAttributeFormSet(instance=obj, prefix="attrs")
+            attr_formset = DeviceAttributeFormSet(instance=obj, prefix="attrs", queryset=obj.attributes.exclude(key="state"))
 
     return render(request, "gestion/edit.html", {
         "form": form,
