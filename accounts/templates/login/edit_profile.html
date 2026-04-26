@@ -1,50 +1,41 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block body_class %}login-page{% endblock %}
-
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/login.css' %}">
-{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
 {% block content %}
-<div class="login-overlay">
-    <h2><i class="fas fa-user-edit mr-2"></i> Modifier mon profil</h2>
+<div class="auth-content">
+<div class="card">
+    <h2><i class="fas fa-user-edit mr-2"></i>Modifier mon profil</h2>
 
     {% if messages %}
         <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
+            {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
         </ul>
     {% endif %}
 
     <form method="post" novalidate>
         {% csrf_token %}
         {% for field in form %}
-            <div class="form-field">
+            <div class="form-group">
                 {{ field.label_tag }}
                 {{ field }}
                 {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
+                    <ul class="error-message">
+                        {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
                     </ul>
-                {% endif %}
-                {% if field.help_text %}
-                    <p class="help-text">{{ field.help_text }}</p>
                 {% endif %}
             </div>
         {% endfor %}
 
-        <button type="submit" class="btn-login">
-            <i class="fas fa-save mr-2"></i> Enregistrer
+    <button type="submit" class="btn btn-primary btn-full">
+            <i class="fas fa-save mr-2"></i>Enregistrer
         </button>
     </form>
 
-    <p class="login-link">
+    <p class="card-link">
         <a href="{% url 'accounts:profile' user.id %}">Annuler</a>
     </p>
 </div>
+
 {% endblock %}
