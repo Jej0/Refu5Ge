@@ -44,6 +44,8 @@ class ItemDetail(LoginRequiredMixin,DetailView):
     context_object_name = "item"
 
 
+
+
 @group_required("avancé")
 def room_device_add(request, pk):
     room = get_object_or_404(Room, pk=pk)

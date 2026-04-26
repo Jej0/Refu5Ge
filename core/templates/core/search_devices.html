@@ -39,7 +39,7 @@
                 <td><a href="{% url 'item_detail' device.id %}">{{ device.name }}</a></td>
                 <td>{{ device.type }}</td>
                 <td>{{ device.room.name }}</td>
-                <td>{% if d.state %}allumé{% else %}éteint{% endif %}</td>
+                <td>{% if device.state %}allumé{% else %}éteint{% endif %}</td>
                 <td>{{ device.attributes.count }}</td>
             </tr>
             {% empty %}
