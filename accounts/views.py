@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+
+from Refu5Ge.decorators import anonymous_required
 from .forms import CustomUserCreationForm, UserUpdateForm
 from .models import EmailVerifToken
 from django.shortcuts import get_object_or_404
@@ -12,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 
+@anonymous_required
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
