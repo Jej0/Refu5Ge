@@ -1,0 +1,23 @@
+/* ===== GESTION ===== */
+#attrs-forms {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.attr-form-row {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid #d4a373;
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.attr-form-row p {
+    margin-bottom: 0.75rem;
+}
+
+.attr-form-row p:last-child {
+    margin-bottom: 0;
+}
+

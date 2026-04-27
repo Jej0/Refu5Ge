@@ -1,10 +1,28 @@
-from datetime import timedelta
-from django.utils import timezone
 import csv
+from datetime import timedelta
+from typing import TypedDict
+
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Count
-from core.models import Room, Device, DeviceAttribute, DeviceLogActivation
+from django.utils import timezone
+from core.models import Room, Device, DeviceLogActivation
+
+
+class MonthlyReportItem(TypedDict):
+    device: Device
+    activation_count: int
+    month_hours: float
+    day_hours: float
+    consumption_per_hour: float
+    day_consumption: float
+    month_consumption: float
+
+
+class MonthlyReport(TypedDict):
+    items: list[MonthlyReportItem]
+    total_day_consumption: float
+    total_month_consumption: float
 
 
 def rapports_accueil(request):
@@ -189,16 +207,40 @@ def export_room_csv(request, room_id):
     return response
 
 
-from datetime import timedelta
-from django.utils import timezone
+def _compute_active_time(device, logs, start, end) -> tuple[timedelta, int]:
+    active_time = timedelta()
+    activation_count = 0
+
+    previous_log = device.logs.filter(date__lt=start).order_by("-date").first()
+    current_state = bool(previous_log.state) if previous_log else False
+    active_since = start if current_state else None
+
+    for log in logs:
+        if log.state == current_state:
+            continue
+
+        if log.state:
+            current_state = True
+            activation_count += 1
+            active_since = log.date
+        else:
+            if active_since is not None:
+                active_time += log.date - active_since
+            current_state = False
+            active_since = None
+
+    if current_state and active_since is not None:
+        active_time += end - active_since
+
+    return active_time, activation_count
 
 
-def get_monthly_device_report(room):
+def get_monthly_device_report(room) -> MonthlyReport:
     now = timezone.now()
     start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     start_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    report_items = []
+    report_items: list[MonthlyReportItem] = []
 
     total_day_consumption = 0
     total_month_consumption = 0
@@ -209,34 +251,18 @@ def get_monthly_device_report(room):
         logs_month = device.logs.filter(date__gte=start_month).order_by("date")
         logs_day = device.logs.filter(date__gte=start_day).order_by("date")
 
-        total_month_active_time = timedelta()
-        total_day_active_time = timedelta()
-
-        activation_start = None
-        activation_count = 0
-
-        for log in logs_month:
-            if log.state:
-                activation_start = log.date
-                activation_count += 1
-            elif not log.state and activation_start is not None:
-                total_month_active_time += log.date - activation_start
-                activation_start = None
-
-        if activation_start is not None:
-            total_month_active_time += now - activation_start
-
-        activation_start_day = None
-
-        for log in logs_day:
-            if log.state:
-                activation_start_day = log.date
-            elif not log.state and activation_start_day is not None:
-                total_day_active_time += log.date - activation_start_day
-                activation_start_day = None
-
-        if activation_start_day is not None:
-            total_day_active_time += now - activation_start_day
+        total_month_active_time, activation_count = _compute_active_time(
+            device,
+            logs_month,
+            start_month,
+            now,
+        )
+        total_day_active_time, _ = _compute_active_time(
+            device,
+            logs_day,
+            start_day,
+            now,
+        )
 
         month_hours = round(total_month_active_time.total_seconds() / 3600, 2)
         day_hours = round(total_day_active_time.total_seconds() / 3600, 2)

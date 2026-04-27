@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block body_class %}auth-page{% endblock %}
 {% block title %}Éditer {{ model_name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/account.css">
+<link rel="stylesheet" href="/static/css/gestion.css">
+{% endblock %}
 {% block content %}
 <div class="auth-content">
     <div class="card">

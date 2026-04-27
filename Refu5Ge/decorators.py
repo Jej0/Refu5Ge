@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.shortcuts import redirect
 
 from accounts.models import UserProfile
@@ -15,3 +17,11 @@ def group_required(group_name):
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator
+
+def anonymous_required(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("core:home")  # ou autre page
+        return view_func(request, *args, **kwargs)
+    return _wrapped
